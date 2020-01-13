@@ -62,5 +62,3 @@ cd gpt2bot
 ### 3. Start chatting!
 
 ![](telegram_bot.gif)
-
-- The results seem really impressive
