@@ -1,0 +1,1 @@
+from GPT2Bot import model, decoder
