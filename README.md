@@ -1,6 +1,5 @@
 # GPT2Bot
 
-
 ```
 User >>> Can we achieve singularity?
 Bot >>> What does this mean?
@@ -62,3 +61,8 @@ cd gpt2bot
 ### 3. Start chatting!
 
 ![](telegram_bot.gif)
+
+## References
+
+- Official DialoGPT implementation - [link](https://github.com/microsoft/DialoGPT)
+- DialoGPT paper - [link](https://arxiv.org/abs/1911.00536)
