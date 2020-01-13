@@ -25,11 +25,11 @@ Since even with properly filtered Reddit dataset the model can generate toxic/in
   
 ## How to use?
 
-### Create a Telegram bot
+### 1. Create a Telegram bot
 
 - Register a new Telegram bot via BotFather (see https://core.telegram.org/bots)
 
-### Deploy the bot
+### 2. Deploy the bot
 
 #### Docker
 
@@ -59,6 +59,6 @@ cd gpt2bot
 - Set your parameters such as API token in dialog.cfg
 - Run `python telegram_bot.py`
 
-### Start chatting
+### 3. Start chatting
 
 ![](telegram_bot.gif)
