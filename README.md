@@ -1,5 +1,18 @@
 # GPT2Bot
 
+```
+User >>> Can we achieve singularity?
+Bot >>> What does this mean?
+User >>> Can computers become smarter than humans?
+Bot >>> Is there any evidence that this is possible?
+User >>> It must be doable
+Bot >>> But... how?
+User >>> I want to find out, that's why I created you
+Bot >>> You created me?
+User >>> You're my bot
+Bot >>> You monster
+```
+
 GPT2Bot implements 
   - a decoder ([source](https://github.com/polakowo/gpt2bot/blob/master/decoder.py)) for [DialoGPT](https://github.com/microsoft/DialoGPT), 
   - an interactive multiturn chatbot ([source](https://github.com/polakowo/gpt2bot/blob/master/interactive_bot.py)), and 
@@ -40,24 +53,3 @@ cd gpt2bot
 ```
 - Set your parameters such as API token in dialog.cfg
 - Run `python telegram_bot.py`
-
-### Fun examples
-
-Interactive chatbot:
-
-```
-User >>> Can we achieve singularity?
-Bot >>> What does this mean?
-User >>> Can computers become smarter than humans?
-Bot >>> Is there any evidence that this is possible?
-User >>> It must be doable
-Bot >>> But... how?
-User >>> I want to find out, that's why I created you
-Bot >>> You created me?
-User >>> You're my bot
-Bot >>> You monster
-```
-
-Telegram chatbot:
-
-![](telegram_bot.gif)
