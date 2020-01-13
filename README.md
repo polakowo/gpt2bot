@@ -1,17 +1,6 @@
 # GPT2Bot
 
-```
-User >>> Can we achieve singularity?
-Bot >>> What does this mean?
-User >>> Can computers become smarter than humans?
-Bot >>> Is there any evidence that this is possible?
-User >>> It must be doable
-Bot >>> But... how?
-User >>> I want to find out, that's why I created you
-Bot >>> You created me?
-User >>> You're my bot
-Bot >>> You monster
-```
+![](telegram_bot.gif)
 
 GPT2Bot implements 
   - a decoder ([source](https://github.com/polakowo/gpt2bot/blob/master/decoder.py)) for [DialoGPT](https://github.com/microsoft/DialoGPT), 
@@ -56,4 +45,15 @@ cd gpt2bot
 
 ### Start chatting
 
-![](telegram_bot.gif)
+```
+User >>> Can we achieve singularity?
+Bot >>> What does this mean?
+User >>> Can computers become smarter than humans?
+Bot >>> Is there any evidence that this is possible?
+User >>> It must be doable
+Bot >>> But... how?
+User >>> I want to find out, that's why I created you
+Bot >>> You created me?
+User >>> You're my bot
+Bot >>> You monster
+```
