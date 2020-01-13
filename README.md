@@ -7,7 +7,7 @@ GPT2Bot implements
   
 ## How to use?
 
-### Docker
+### Docker container
 
 - Set your parameters in dialog.cfg
 - If you run the container locally, to avoid downloading model files during each deployment, it is advised to download the model files first. To do this, run
@@ -18,6 +18,12 @@ python model.py
 ```
 docker build -t gpt2bot . && docker run gpt2bot
 ```
+
+### Google Colab
+
+A good thing about Google Colab is free GPU. So why not running the Telegram bot there, for blazingly fast chat? Run the notebook at daytime and do not forget to stop it at night.
+
+[A Colab interactive notebook](https://colab.research.google.com/github/polakowo/gpt2bot/blob/master/Demo.ipynb)
 
 ### Run manually
 
@@ -54,9 +60,3 @@ The same as the interactive chatbot but in Telegram and supports gifs.
 - Run `python telegram_bot.py`
 
 ![](telegram_bot.gif)
-
-### Google Colab
-
-A good thing about Google Colab is free GPU. So why not running the Telegram bot there, for blazingly fast chat? Run the notebook at daytime and do not forget to stop it at night.
-
-[A Colab interactive notebook](https://colab.research.google.com/github/polakowo/gpt2bot/blob/master/Demo.ipynb)
