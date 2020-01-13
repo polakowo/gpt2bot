@@ -4,7 +4,10 @@ GPT2Bot implements a decoder ([source](https://github.com/polakowo/gpt2bot/blob/
 
 ### How to use it?
 
-- Requires [pytorch](https://github.com/pytorch/pytorch) (tested on 1.2.0), [transformers](https://github.com/huggingface/transformers) (tested on 2.3.0), and [python-telegram-bot](https://github.com/python-telegram-bot/python-telegram-bot) (tested on 12.3.0)
+- Requires 
+  - [pytorch](https://github.com/pytorch/pytorch) (tested on 1.2.0), 
+  - [transformers](https://github.com/huggingface/transformers) (tested on 2.3.0), and 
+  - [python-telegram-bot](https://github.com/python-telegram-bot/python-telegram-bot) (tested on 12.3.0)
 
 #### Interactive chatbot
 
