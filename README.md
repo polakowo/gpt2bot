@@ -65,4 +65,4 @@ cd gpt2bot
 ## References
 
 - [Official DialoGPT implementation](https://github.com/microsoft/DialoGPT) and [DialoGPT paper](https://arxiv.org/abs/1911.00536)
-- [Thread on current decoding scripts](https://github.com/microsoft/DialoGPT/issues/3) - you can wait for a full release and then replace the decoder
+- [Thread on current decoding scripts](https://github.com/microsoft/DialoGPT/issues/3) - I would still wait for a full DialoGPT release and then replace the decoder
