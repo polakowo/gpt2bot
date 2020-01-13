@@ -53,3 +53,7 @@ cd gpt2bot
 ```
 - Set your parameters such as API token in dialog.cfg
 - Run `python telegram_bot.py`
+
+### Start chatting
+
+![](telegram_bot.gif)
