@@ -7,7 +7,7 @@ GPT2Bot implements
   
 ## How to use?
 
-### Deployment
+### Docker deployment
 
 - Set your parameters in dialog.cfg
 - If you run the container locally, to avoid downloading model files during each deployment, it is advised to download the model files first. To do this, run
