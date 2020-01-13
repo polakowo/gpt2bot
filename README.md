@@ -32,6 +32,12 @@ A good thing about Google Colab is free GPU. So why not running the Telegram bot
   - [transformers](https://github.com/huggingface/transformers) (tested on 2.3.0), and 
   - [python-telegram-bot](https://github.com/python-telegram-bot/python-telegram-bot) (tested on 12.3.0)
 
+- Clone the repository
+```
+git clone https://github.com/polakowo/gpt2bot.git
+cd gpt2bot
+```
+
 #### Interactive chatbot
 
 - Set your parameters in dialog.cfg
