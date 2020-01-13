@@ -7,9 +7,15 @@ GPT2Bot implements
   
 ## How to use?
 
-### Deployment
+### Create a Telegram bot
 
-- Set your parameters in dialog.cfg
+- Register a new Telegram bot via BotFather (see https://core.telegram.org/bots)
+
+### Deploy the bot
+
+#### Docker
+
+- Set your parameters such as API token in dialog.cfg
 - If you run the container locally, to avoid downloading model files during each deployment, it is advised to download the model files first
 ```
 python model.py
@@ -19,31 +25,26 @@ python model.py
 docker build -t gpt2bot . && docker run gpt2bot
 ```
 
-### Google Colab
+#### Google Colab
 
 A good thing about Google Colab is free GPU. So why not running the Telegram bot there, for blazingly fast chat? Run the notebook at daytime and do not forget to stop it at night.
 
 [A Colab interactive notebook](https://colab.research.google.com/github/polakowo/gpt2bot/blob/master/Demo.ipynb)
 
-### Run manually
-
-- Requires 
-  - [pytorch](https://github.com/pytorch/pytorch) (tested on 1.2.0), 
-  - [transformers](https://github.com/huggingface/transformers) (tested on 2.3.0), and 
-  - [python-telegram-bot](https://github.com/python-telegram-bot/python-telegram-bot) (tested on 12.3.0)
+#### Manually
 
 - Clone the repository
 ```
 git clone https://github.com/polakowo/gpt2bot.git
 cd gpt2bot
 ```
+- Set your parameters such as API token in dialog.cfg
+- Run `python telegram_bot.py`
 
-#### Interactive chatbot
+## Fun stuff
 
-- Set your parameters in dialog.cfg
-- Run `python interactive_bot.py` and start chatting!
+- Interactive chatbot
 
-An example of a fun dialog:
 ```
 User >>> Can we achieve singularity?
 Bot >>> What does this mean?
@@ -57,12 +58,6 @@ User >>> You're my bot
 Bot >>> You monster
 ```
 
-#### Telegram chatbot
-
-The same as the interactive chatbot but in Telegram and supports gifs.
-
-- Create a new Telegram bot via BotFather (see https://core.telegram.org/bots)
-- Set your parameters such as API token in dialog.cfg
-- Run `python telegram_bot.py` and start chatting!
+- Telegram chatbot
 
 ![](telegram_bot.gif)
