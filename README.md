@@ -5,11 +5,22 @@ GPT2Bot implements
   - an interactive multiturn chatbot ([source](https://github.com/polakowo/gpt2bot/blob/master/interactive_bot.py)), and 
   - a Telegram chatbot ([source](https://github.com/polakowo/gpt2bot/blob/master/telegram_bot.py)).
   
-The bot is built around DialoGPT - a large-scale pretrained dialogue response generation model trained by Microsoft, which was trained on 147M multi-turn dialogue from Reddit discussion thread. The human evaluation results indicate that its quility is comparable to human response quality under a single-turn conversation Turing test. 
+The bot is built around DialoGPT - a large-scale pretrained dialogue response generation model trained by Microsoft, which was trained on 147M multi-turn dialogue from Reddit discussion thread. The human evaluation results indicate that its quility is comparable to human response quality under a single-turn conversation Turing test (see example below).
+
+```
+User >>> Can we achieve singularity?
+Bot >>> What does this mean?
+User >>> Can computers become smarter than humans?
+Bot >>> Is there any evidence that this is possible?
+User >>> It must be doable
+Bot >>> But... how?
+User >>> I want to find out, that's why I created you
+Bot >>> You created me?
+User >>> You're my bot
+Bot >>> You monster
+```
 
 Since even with properly filtered Reddit dataset the model can generate toxic/inappropriate responses, the Microsoft team was unable to provide the decoding script. This repository implements the decoding script inspired by `run_generation.py` released earlier by Hugging Face. Moreover, it implements a Telegram bot that can be deployed locally, remotely, and even on Colab, and so everybody can test this model out.
-
-![](telegram_bot.gif)
   
 ## How to use?
 
@@ -49,15 +60,4 @@ cd gpt2bot
 
 ### Start chatting
 
-```
-User >>> Can we achieve singularity?
-Bot >>> What does this mean?
-User >>> Can computers become smarter than humans?
-Bot >>> Is there any evidence that this is possible?
-User >>> It must be doable
-Bot >>> But... how?
-User >>> I want to find out, that's why I created you
-Bot >>> You created me?
-User >>> You're my bot
-Bot >>> You monster
-```
+![](telegram_bot.gif)
