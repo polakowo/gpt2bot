@@ -62,6 +62,8 @@ cd gpt2bot
 
 ![](telegram_bot.gif)
 
+Just start texting. Append @gif for the bot to generate a GIF instead of text. To reset, type "Bye".
+
 ## References
 
 - [Official DialoGPT implementation](https://github.com/microsoft/DialoGPT) and [DialoGPT paper](https://arxiv.org/abs/1911.00536)
