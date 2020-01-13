@@ -1,11 +1,25 @@
-## GPT2Bot
+# GPT2Bot
 
 GPT2Bot implements 
   - a decoder ([source](https://github.com/polakowo/gpt2bot/blob/master/decoder.py)) for [DialoGPT](https://github.com/microsoft/DialoGPT), 
   - an interactive multiturn chatbot ([source](https://github.com/polakowo/gpt2bot/blob/master/interactive_bot.py)), and 
   - a Telegram chatbot ([source](https://github.com/polakowo/gpt2bot/blob/master/telegram_bot.py)).
+  
+## How to use?
 
-### How to use it?
+### Docker
+
+- Set your parameters in dialog.cfg
+- If you run the container locally, to avoid downloading model files during each deployment, it is advised to download the model files first. To do this, run
+```
+python model.py
+```
+- Finally, deploy the container by using
+```
+docker build -t gpt2bot . && docker run gpt2bot
+```
+
+### Run manually
 
 - Requires 
   - [pytorch](https://github.com/pytorch/pytorch) (tested on 1.2.0), 
@@ -40,6 +54,8 @@ The same as the interactive chatbot but in Telegram and supports gifs.
 - Run `python telegram_bot.py`
 
 ![](telegram_bot.gif)
+
+### Google Colab
 
 A good thing about Google Colab is free GPU. So why not running the Telegram bot there, for blazingly fast chat? Run the notebook at daytime and do not forget to stop it at night.
 
