@@ -1,4 +1,4 @@
-## GPT2Bot
+# GPT2Bot
 
 GPT2Bot implements 
   - a decoder ([source](https://github.com/polakowo/gpt2bot/blob/master/decoder.py)) for [DialoGPT](https://github.com/microsoft/DialoGPT), 
