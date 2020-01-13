@@ -10,11 +10,11 @@ GPT2Bot implements
 ### Deployment
 
 - Set your parameters in dialog.cfg
-- If you run the container locally, to avoid downloading model files during each deployment, it is advised to download the model files first. To do this, run
+- If you run the container locally, to avoid downloading model files during each deployment, it is advised to download the model files first
 ```
 python model.py
 ```
-- Finally, deploy the container by using
+- Finally, deploy the container
 ```
 docker build -t gpt2bot . && docker run gpt2bot
 ```
