@@ -41,9 +41,9 @@ cd gpt2bot
 - Set your parameters such as API token in dialog.cfg
 - Run `python telegram_bot.py`
 
-## Fun stuff
+### Fun examples
 
-- Interactive chatbot
+Interactive chatbot:
 
 ```
 User >>> Can we achieve singularity?
@@ -58,6 +58,6 @@ User >>> You're my bot
 Bot >>> You monster
 ```
 
-- Telegram chatbot
+Telegram chatbot:
 
 ![](telegram_bot.gif)
