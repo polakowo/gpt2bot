@@ -1,6 +1,6 @@
 ## GPT2Bot
 
-GPT2Bot implements a decoder ([link](https://github.com/polakowo/gpt2bot/blob/master/decoder.py)) for [DialoGPT](https://github.com/microsoft/DialoGPT), an interactive multiturn chatbot ([link](https://github.com/polakowo/gpt2bot/blob/master/interactive_bot.py)), and a Telegram chatbot ([link](https://github.com/polakowo/gpt2bot/blob/master/telegram_bot.py)).
+GPT2Bot implements a decoder ([source](https://github.com/polakowo/gpt2bot/blob/master/decoder.py)) for [DialoGPT](https://github.com/microsoft/DialoGPT), an interactive multiturn chatbot ([source](https://github.com/polakowo/gpt2bot/blob/master/interactive_bot.py)), and a Telegram chatbot ([source](https://github.com/polakowo/gpt2bot/blob/master/telegram_bot.py)).
 
 ### How to use it?
 
