@@ -35,7 +35,7 @@ A good thing about Google Colab is free GPU. So why not running the Telegram bot
 #### Interactive chatbot
 
 - Set your parameters in dialog.cfg
-- Run `python interactive_bot.py`
+- Run `python interactive_bot.py` and start chatting!
 
 An example of a fun dialog:
 ```
@@ -57,6 +57,6 @@ The same as the interactive chatbot but in Telegram and supports gifs.
 
 - Create a new Telegram bot via BotFather (see https://core.telegram.org/bots)
 - Set your parameters such as API token in dialog.cfg
-- Run `python telegram_bot.py`
+- Run `python telegram_bot.py` and start chatting!
 
 ![](telegram_bot.gif)
