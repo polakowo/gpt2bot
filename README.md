@@ -64,5 +64,5 @@ cd gpt2bot
 
 ## References
 
-- Official DialoGPT implementation - [link](https://github.com/microsoft/DialoGPT)
-- DialoGPT paper - [link](https://arxiv.org/abs/1911.00536)
+- [Official DialoGPT implementation](https://github.com/microsoft/DialoGPT)
+- [DialoGPT paper](https://arxiv.org/abs/1911.00536)
