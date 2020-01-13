@@ -29,11 +29,11 @@ GPT2Bot implements
 #### Docker
 
 - Set your parameters such as API token in dialog.cfg
-- If you run the container locally, to avoid downloading model files during each deployment, it is advised to download the model files first
+- If you run the container locally, to avoid downloading model files during each deployment, it is advised to download the model files first:
 ```
 python model.py
 ```
-- Finally, deploy the container
+- Finally, deploy the container:
 ```
 docker build -t gpt2bot . && docker run gpt2bot
 ```
@@ -46,7 +46,7 @@ A good thing about Google Colab is free GPU. So why not running the Telegram bot
 
 #### Manually
 
-- Clone the repository
+- Clone the repository:
 ```
 git clone https://github.com/polakowo/gpt2bot.git
 cd gpt2bot
