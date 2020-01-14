@@ -33,16 +33,13 @@ Since even with properly filtered Reddit dataset the model can generate toxic/in
 #### Docker
 
 - Clone the repository
-```
-git clone https://github.com/polakowo/gpt2bot.git
-```
 - Set your parameters such as API token in dialog.cfg
 - To avoid re-downloading model files at each re-deployment, download the model files beforehand with
 ```
 # cd gpt2bot/gpt2bot
 python model.py
 ```
-- Finally, deploy the container
+- Finally, deploy the container from the root folder
 ```
 docker build -t gpt2bot . && docker run gpt2bot
 ```
@@ -56,9 +53,6 @@ Inference code can be run on CPU, but it would be slow. A good thing about Googl
 #### Manually
 
 - Clone the repository
-```
-git clone https://github.com/polakowo/gpt2bot.git
-```
 - Set your parameters such as API token in dialog.cfg
 - Run the script
 ```
