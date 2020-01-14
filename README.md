@@ -60,7 +60,7 @@ Inference code can be run on CPU, but it would be slow. A good thing about Googl
 git clone https://github.com/polakowo/gpt2bot.git
 ```
 - Set your parameters such as API token in dialog.cfg
-- Run
+- Run the script
 ```
 # cd gpt2bot/gpt2bot
 python telegram_bot.py
