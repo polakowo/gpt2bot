@@ -3,6 +3,8 @@ import requests
 from tqdm import tqdm
 from glob import glob
 import torch
+import configparser
+import argparse
 import logging
 
 # !pip install transformers==2.3.0
@@ -124,3 +126,21 @@ def load_model(target_folder, config):
     model.to(device)
     model.eval()
     return model, tokenizer
+
+def main():
+    # Script arguments can include path of the config
+    arg_parser = argparse.ArgumentParser()
+    arg_parser.add_argument('--config', type=str, default="chatbot.cfg")
+    args = arg_parser.parse_args()
+
+    # Read the config
+    config = configparser.ConfigParser(allow_no_value=True)
+    with open(args.config) as f:
+        config.read_file(f)
+
+    # Download model artifacts
+    target_dir = download_model_folder(config)
+    
+
+if __name__ == '__main__':
+    main()
