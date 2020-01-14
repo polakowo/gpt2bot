@@ -14,9 +14,9 @@ Bot >>> You monster
 ```
 
 GPT2Bot implements 
-  - a decoder ([source](https://github.com/polakowo/gpt2bot/blob/master/decoder.py)) for [DialoGPT](https://github.com/microsoft/DialoGPT), 
-  - an interactive multiturn chatbot ([source](https://github.com/polakowo/gpt2bot/blob/master/interactive_bot.py)), and 
-  - a Telegram chatbot ([source](https://github.com/polakowo/gpt2bot/blob/master/telegram_bot.py)).
+  - a decoder ([source](https://github.com/polakowo/gpt2bot/blob/master/gpt2bot/decoder.py)) for [DialoGPT](https://github.com/microsoft/DialoGPT), 
+  - an interactive multiturn chatbot ([source](https://github.com/polakowo/gpt2bot/blob/master/gpt2bot/interactive_bot.py)), and 
+  - a Telegram chatbot ([source](https://github.com/polakowo/gpt2bot/blob/master/gpt2bot/telegram_bot.py)).
   
 The bot is built around [DialoGPT](https://github.com/microsoft/DialoGPT) - a large-scale pretrained dialogue response generation model trained by Microsoft, which was trained on 147M multi-turn dialogue from Reddit discussion thread. The human evaluation results indicate that its quility is comparable to human response quality under a single-turn conversation Turing test (see example above).
 
