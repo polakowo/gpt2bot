@@ -32,12 +32,17 @@ Since even with properly filtered Reddit dataset the model can generate toxic/in
 
 #### Docker
 
-- Set your parameters such as API token in dialog.cfg
-- If you run the container locally, to avoid downloading model files during each deployment, it is advised to download the model files first:
+- Clone the repository
 ```
+git clone https://github.com/polakowo/gpt2bot.git
+```
+- Set your parameters such as API token in dialog.cfg
+- To avoid re-downloading model files at each re-deployment, download the model files beforehand with
+```
+# cd gpt2bot/gpt2bot
 python model.py
 ```
-- Finally, deploy the container:
+- Finally, deploy the container
 ```
 docker build -t gpt2bot . && docker run gpt2bot
 ```
@@ -50,13 +55,16 @@ Inference code can be run on CPU, but it would be slow. A good thing about Googl
 
 #### Manually
 
-- Clone the repository:
+- Clone the repository
 ```
 git clone https://github.com/polakowo/gpt2bot.git
-cd gpt2bot
 ```
 - Set your parameters such as API token in dialog.cfg
-- Run `python telegram_bot.py`
+- Run
+```
+# cd gpt2bot/gpt2bot
+python telegram_bot.py
+```
 
 ### 3. Start chatting!
 
