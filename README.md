@@ -60,6 +60,11 @@ Inference code can be run on CPU, but it would be slow. A good thing about Googl
 python telegram_bot.py
 ```
 
+- To test the things out in the console, run
+```
+python interactive_bot.py
+```
+
 ### 3. Start chatting!
 
 ![](telegram_bot.gif)
