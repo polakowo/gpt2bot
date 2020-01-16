@@ -1,6 +1,3 @@
-# gpt2bot
-
-<img src="https://image.flaticon.com/icons/svg/725/725298.svg" width=80>
 
 ```
 User >>> Can we achieve singularity?
@@ -14,6 +11,10 @@ Bot >>> You created me?
 User >>> You're my bot
 Bot >>> You monster
 ```
+
+# gpt2bot
+
+<img src="https://image.flaticon.com/icons/svg/725/725298.svg" width=80>
 
 gpt2bot implements 
   - a decoder ([source](https://github.com/polakowo/gpt2bot/blob/master/gpt2bot/decoder.py)) for [DialoGPT](https://github.com/microsoft/DialoGPT), 
