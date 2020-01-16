@@ -1,5 +1,7 @@
 # gpt2bot
 
+<img src="https://image.flaticon.com/icons/svg/725/725298.svg" width=80>
+
 ```
 User >>> Can we achieve singularity?
 Bot >>> What does this mean?
