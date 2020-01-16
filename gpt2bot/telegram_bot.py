@@ -80,7 +80,7 @@ send_typing_action = send_action(ChatAction.TYPING)
 @send_typing_action
 def message(self, update, context):
     # Parse parameters
-    num_samples = config.getint('decoder', 'num_samples')
+    num_samples = self.config.getint('decoder', 'num_samples')
     turns_memory = self.config.getint('chatbot', 'turns_memory')
     if 'turns' not in context.chat_data:
         context.chat_data['turns'] = []
