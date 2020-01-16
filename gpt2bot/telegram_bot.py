@@ -80,6 +80,7 @@ send_typing_action = send_action(ChatAction.TYPING)
 @send_typing_action
 def message(self, update, context):
     # Parse parameters
+    num_samples = config.getint('decoder', 'num_samples')
     turns_memory = self.config.getint('chatbot', 'turns_memory')
     if 'turns' not in context.chat_data:
         context.chat_data['turns'] = []
@@ -117,7 +118,13 @@ def message(self, update, context):
             history += message + self.tokenizer.eos_token
 
     # Generate bot messages
-    bot_message = generate_response(self.model, self.tokenizer, history, self.config)
+    bot_messages = generate_response(self.model, self.tokenizer, history, self.config)
+    if num_samples == 1:
+        bot_message = bot_messages[0]
+    else:
+        # TODO: Select a message that is the most appropriate given the context
+        # This way you can avoid loops
+        bot_message = random.choice(bot_messages)
     turn['bot_messages'].append(bot_message)
     if return_gif:
         # Return response as GIF

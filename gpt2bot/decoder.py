@@ -67,7 +67,6 @@ def sample_sequence(model, context, config):
 
 def generate_response(model, tokenizer, context, config):
     # Parse parameters
-    num_samples = config.getint('decoder', 'num_samples')
     seed = config.get('decoder', 'seed')
     seed = int(seed) if seed is not None else None
 
@@ -84,6 +83,4 @@ def generate_response(model, tokenizer, context, config):
         text = tokenizer.decode(o, clean_up_tokenization_spaces=True)
         text = text[: text.find(tokenizer.eos_token)]
         texts.append(text)
-    if num_samples == 1:
-        return texts[0]
     return texts

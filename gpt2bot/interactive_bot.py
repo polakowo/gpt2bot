@@ -4,6 +4,7 @@
 import configparser
 import argparse
 import logging
+import random
 
 from model import download_model_folder, load_model
 from decoder import generate_response
@@ -14,6 +15,7 @@ logger = logging.getLogger(__name__)
 
 def run_chat(model, tokenizer, config):
     # Parse parameters
+    num_samples = config.getint('decoder', 'num_samples')
     turns_memory = config.getint('chatbot', 'turns_memory')
 
     logger.info("Running the chatbot...")
@@ -48,7 +50,13 @@ def run_chat(model, tokenizer, config):
                 history += message + tokenizer.eos_token
 
         # Generate bot messages
-        bot_message = generate_response(model, tokenizer, history, config)
+        bot_messages = generate_response(model, tokenizer, history, config)
+        if num_samples == 1:
+            bot_message = bot_messages[0]
+        else:
+            # TODO: Select a message that is the most appropriate given the context
+            # This way you can avoid loops
+            bot_message = random.choice(bot_messages)
         print("Bot >>>", bot_message)
         turn['bot_messages'].append(bot_message)
 
