@@ -18,7 +18,7 @@ GPT2Bot implements
   - an interactive multiturn chatbot ([source](https://github.com/polakowo/gpt2bot/blob/master/gpt2bot/interactive_bot.py)), and 
   - a Telegram chatbot ([source](https://github.com/polakowo/gpt2bot/blob/master/gpt2bot/telegram_bot.py)).
   
-The bot is built around [DialoGPT](https://github.com/microsoft/DialoGPT) - a large-scale pretrained dialogue response generation model trained by Microsoft, which was trained on 147M multi-turn dialogue from Reddit discussion thread. The human evaluation results indicate that its quility is comparable to human response quality under a single-turn conversation Turing test (see example above).
+The bot is built around [DialoGPT](https://github.com/microsoft/DialoGPT) - a large-scale pretrained dialogue response generation model trained by Microsoft, which was trained on 147M multi-turn dialogue from Reddit discussion thread. The human evaluation results indicate that its quility is comparable to human response quality under a single-turn conversation Turing test.
 
 Since even with properly filtered Reddit dataset the model can generate toxic/inappropriate responses, the Microsoft team was unable to provide the decoding script. This repository implements the decoding script inspired by `run_generation.py` released earlier by Hugging Face. Moreover, it implements a Telegram bot that can be deployed locally, remotely, and even on Colab, and just makes testing fun.
   
@@ -54,12 +54,12 @@ Inference code can be run on CPU, but it would be slow. A good thing about Googl
 
 - Clone the repository
 - Set your parameters such as API token in dialog.cfg
+- Install packages listed in requirements.txt
 - Run the script
 ```
 # cd gpt2bot/gpt2bot
 python telegram_bot.py
 ```
-
 - To test the things out in the console, run
 ```
 python interactive_bot.py
