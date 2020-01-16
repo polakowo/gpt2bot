@@ -1,4 +1,4 @@
-# GPT2Bot
+# gpt2bot
 
 ```
 User >>> Can we achieve singularity?
@@ -13,7 +13,7 @@ User >>> You're my bot
 Bot >>> You monster
 ```
 
-GPT2Bot implements 
+gpt2bot implements 
   - a decoder ([source](https://github.com/polakowo/gpt2bot/blob/master/gpt2bot/decoder.py)) for [DialoGPT](https://github.com/microsoft/DialoGPT), 
   - an interactive multiturn chatbot ([source](https://github.com/polakowo/gpt2bot/blob/master/gpt2bot/interactive_bot.py)), and 
   - a Telegram chatbot ([source](https://github.com/polakowo/gpt2bot/blob/master/gpt2bot/telegram_bot.py)).
