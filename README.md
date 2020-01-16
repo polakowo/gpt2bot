@@ -1,6 +1,6 @@
 # gpt2bot
 
-<img src="https://image.flaticon.com/icons/svg/725/725298.svg" width=80>
+<img src="https://github.com/polakowo/gpt2bot/blob/master/reddit.png?raw=true" width=80>
 
 gpt2bot implements 
   - a decoder ([source](https://github.com/polakowo/gpt2bot/blob/master/gpt2bot/decoder.py)) for [DialoGPT](https://github.com/microsoft/DialoGPT), 
