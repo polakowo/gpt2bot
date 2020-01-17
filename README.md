@@ -32,6 +32,12 @@ Since even with properly filtered Reddit dataset the model can generate toxic/in
 
 ### 2. Deploy the bot
 
+#### Google Colab
+
+Inference code can be run on CPU, but it would be slow. A good thing about Google Colab is free GPU. So why not running the Telegram bot there, for blazingly fast chat? Run the notebook at daytime and do not forget to stop it at night.
+
+[A Colab interactive notebook](https://colab.research.google.com/github/polakowo/gpt2bot/blob/master/Demo.ipynb)
+
 #### Docker
 
 - Clone the repository
@@ -45,12 +51,6 @@ python model.py
 ```
 docker build -t gpt2bot . && docker run gpt2bot
 ```
-
-#### Google Colab
-
-Inference code can be run on CPU, but it would be slow. A good thing about Google Colab is free GPU. So why not running the Telegram bot there, for blazingly fast chat? Run the notebook at daytime and do not forget to stop it at night.
-
-[A Colab interactive notebook](https://colab.research.google.com/github/polakowo/gpt2bot/blob/master/Demo.ipynb)
 
 #### Manually
 
