@@ -78,6 +78,7 @@ Just start texting. Append @gif for the bot to generate a GIF instead of text. T
 #### 18/01/2020
 
 - EOS token is being checked during generation -> gpt2bot is now fast enough to be run on CPU.
+- Add support for maximum mutual information (MMI) -> more quality, but slower.
 
 ## References
 
