@@ -73,6 +73,12 @@ python interactive_bot.py
 
 Just start texting. Append @gif for the bot to generate a GIF instead of text. To reset, type "Bye".
 
+## Updates
+
+#### 18/01/2020
+
+- EOS token is being checked during generation -> gpt2bot is now fast enough to be run on CPU.
+
 ## References
 
 - [Official DialoGPT implementation](https://github.com/microsoft/DialoGPT) and [DialoGPT paper](https://arxiv.org/abs/1911.00536)
