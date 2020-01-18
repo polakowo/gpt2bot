@@ -39,21 +39,21 @@ def top_k_top_p_filtering(logits, top_k=0, top_p=0.0, filter_value=-float('Inf')
     return logits
 
 
-def sample_sequence(model, context, config):
+def sample_sequence(model, tokenizer, context_tokens, config):
     # Parse parameters
     no_cuda = config.getboolean('model', 'no_cuda')
     num_samples = config.getint('decoder', 'num_samples')
-    length = config.getint('decoder', 'length')
+    max_length = config.getint('decoder', 'max_length')
     temperature = config.getfloat('decoder', 'temperature')
     top_k = config.getint('decoder', 'top_k')
     top_p = config.getfloat('decoder', 'top_p')
 
     device = torch.device("cuda" if torch.cuda.is_available() and not no_cuda else "cpu")
-    context = torch.tensor(context, dtype=torch.long, device=device)
-    context = context.unsqueeze(0).repeat(num_samples, 1)
-    generated = context
+    context_tensor = torch.tensor(context_tokens, dtype=torch.long, device=device)
+    context_tensor = context_tensor.unsqueeze(0).repeat(num_samples, 1)
+    generated = context_tensor
     with torch.no_grad():
-        for _ in range(length):
+        while True:
             inputs = {'input_ids': generated}
             outputs = model(**inputs)  # Note: we could also use 'past' with GPT-2/Transfo-XL/XLNet/CTRL (cached hidden-states)
             next_token_logits = outputs[0][:, -1, :] / (temperature if temperature > 0 else 1.)
@@ -63,6 +63,12 @@ def sample_sequence(model, context, config):
             else:
                 next_token = torch.multinomial(F.softmax(filtered_logits, dim=-1), num_samples=1)
             generated = torch.cat((generated, next_token), dim=1)
+            if (generated[:, len(context_tokens):] == tokenizer.eos_token_id).any(dim=1).all():
+                # EOS token id found in each sample
+                break
+            if generated.shape[1] - len(context_tokens) >= max_length:
+                # Maximum length reached
+                break
     return generated
 
 def generate_response(model, tokenizer, context, config):
@@ -76,7 +82,7 @@ def generate_response(model, tokenizer, context, config):
 
     # Generate response
     context_tokens = tokenizer.encode(context)
-    out = sample_sequence(model, context_tokens, config)
+    out = sample_sequence(model, tokenizer, context_tokens, config)
     out = out[:, len(context_tokens):].tolist()
     texts = []
     for o in out:
