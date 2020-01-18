@@ -17,6 +17,21 @@ from transformers import GPT2Config, GPT2LMHeadModel, GPT2Tokenizer
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+# Model configuration files
+CONFIG_FILE = {
+    'small': 'https://convaisharables.blob.core.windows.net/lsp/117M/config.json',
+    'medium': 'https://convaisharables.blob.core.windows.net/lsp/345M/config.json'
+}
+VOCAB_FILE = {
+    'small': 'https://convaisharables.blob.core.windows.net/lsp/117M/vocab.json',
+    'medium': 'https://convaisharables.blob.core.windows.net/lsp/345M/vocab.json'
+}
+MERGE_FILE = {
+    'small': 'https://convaisharables.blob.core.windows.net/lsp/117M/merges.txt',
+    'medium': 'https://convaisharables.blob.core.windows.net/lsp/345M/merges.txt'
+}
+
+# Model files
 # Note that the model size is roughly half of the GPT model because our model is saved by fp16
 LSP_MODEL_URL = {
     'multiref': {
@@ -30,20 +45,8 @@ LSP_MODEL_URL = {
     }
 }
 
-CONFIG_FILE = {
-    'small': 'https://convaisharables.blob.core.windows.net/lsp/117M/config.json',
-    'medium': 'https://convaisharables.blob.core.windows.net/lsp/345M/config.json'
-}
-
-VOCAB_FILE = {
-    'small': 'https://convaisharables.blob.core.windows.net/lsp/117M/vocab.json',
-    'medium': 'https://convaisharables.blob.core.windows.net/lsp/345M/vocab.json'
-}
-
-MERGE_FILE = {
-    'small': 'https://convaisharables.blob.core.windows.net/lsp/117M/merges.txt',
-    'medium': 'https://convaisharables.blob.core.windows.net/lsp/345M/merges.txt'
-}
+# The reverse model is predicting the source from the target. This model is used for MMI reranking.
+REVERSE_MODEL_URL = 'https://convaisharables.blob.core.windows.net/lsp/multiref/small_reverse.pkl'
 
 def http_get(url, temp_file):
     req = requests.get(url, stream=True)
@@ -79,7 +82,6 @@ def download_model_folder(config):
     dataset = config.get('model', 'dataset')
     from_scratch = config.getboolean('model', 'from_scratch')
 
-    logger.info("Downloading model files...")
     # Create data folder if needed
     if not os.path.exists(data_folder):
         os.makedirs(data_folder, exist_ok=True)
@@ -87,6 +89,7 @@ def download_model_folder(config):
     target_folder_name = model_size + "_" + dataset + ("_fs" if from_scratch else "_ft")
     target_folder = os.path.join(data_folder, target_folder_name)
     # Download files
+    logger.info(f"Downloading model files to {target_folder_name}...")
     download_file(CONFIG_FILE[model_size], target_folder)
     download_file(VOCAB_FILE[model_size], target_folder)
     download_file(MERGE_FILE[model_size], target_folder)
@@ -95,16 +98,38 @@ def download_model_folder(config):
         k = ','.join(list(LSP_MODEL_URL[dataset].keys()))
         raise ValueError(f"'{model_train_type}' not exist for dataset '{dataset}', please choose from [{k}]")
     download_file(LSP_MODEL_URL[dataset][model_train_type], target_folder)
-    return target_folder
+    return target_folder_name
 
-def load_model(target_folder, config):
+def download_reverse_model_folder(config):
     # Parse parameters
+    data_folder = config.get('model', 'data_folder')
+    # Only one size is currently supported
+    model_size = 'medium'
+
+    # Create data folder if needed
+    if not os.path.exists(data_folder):
+        os.makedirs(data_folder, exist_ok=True)
+    # Build target folder name (must be unique across all parameter combinations)
+    target_folder_name = model_size + '_reverse'
+    target_folder = os.path.join(data_folder, target_folder_name)
+    # Download files
+    logger.info(f"Downloading model files to {target_folder_name}...")
+    download_file(CONFIG_FILE[model_size], target_folder)
+    download_file(VOCAB_FILE[model_size], target_folder)
+    download_file(MERGE_FILE[model_size], target_folder)
+    download_file(REVERSE_MODEL_URL, target_folder)
+    return target_folder_name
+
+def load_model(target_folder_name, config):
+    # Parse parameters
+    data_folder = config.get('model', 'data_folder')
     model_size = config.get('model', 'model_size')
     no_cuda = config.getboolean('model', 'no_cuda')
 
-    logger.info("Loading the model...")
+    logger.info(f"Loading model from {target_folder_name}...")
     device = torch.device("cuda" if torch.cuda.is_available() and not no_cuda else "cpu")
     # Tokenizer
+    target_folder = os.path.join(data_folder, target_folder_name)
     tokenizer = GPT2Tokenizer(os.path.join(target_folder, 'vocab.json'), os.path.join(target_folder, 'merges.txt'))
     # Config
     config = GPT2Config.from_json_file(os.path.join(target_folder, 'config.json'))
@@ -134,8 +159,12 @@ def main():
     with open(args.config) as f:
         config.read_file(f)
 
-    # Download model artifacts
-    target_dir = download_model_folder(config)
+    # Download main model
+    download_model_folder(config)
+    # Download reverse model
+    use_mmi = config.getboolean('model', 'use_mmi')
+    if use_mmi:
+        download_reverse_model_folder(config)
     
 
 if __name__ == '__main__':

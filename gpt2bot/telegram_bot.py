@@ -15,7 +15,7 @@ from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
 import random
 
-from model import download_model_folder, load_model
+from model import download_model_folder, download_reverse_model_folder, load_model
 from decoder import generate_response
 
 # Enable logging
@@ -118,7 +118,14 @@ def message(self, update, context):
             history += message + self.tokenizer.eos_token
 
     # Generate bot messages
-    bot_messages = generate_response(self.model, self.tokenizer, history, self.config)
+    bot_messages = generate_response(
+        self.model, 
+        self.tokenizer, 
+        history, 
+        self.config, 
+        mmi_model=self.mmi_model, 
+        mmi_tokenizer=self.mmi_tokenizer
+    )
     if num_samples == 1:
         bot_message = bot_messages[0]
     else:
@@ -139,12 +146,14 @@ def error(update, context):
     logger.warning(context.error)
 
 class TelegramBot:
-    def __init__(self, model, tokenizer, config):
+    def __init__(self, model, tokenizer, config, mmi_model=None, mmi_tokenizer=None):
         logger.info("Initializing the bot...")
 
         # Set global variables
         self.model = model
         self.tokenizer = tokenizer
+        self.mmi_model = mmi_model
+        self.mmi_tokenizer = mmi_tokenizer
         self.config = config
 
         # Set up Telegram bot
@@ -183,14 +192,21 @@ def main():
     with open(args.config) as f:
         config.read_file(f)
 
-    # Download model artifacts
-    target_dir = download_model_folder(config)
+    # Download and load main model
+    target_folder_name = download_model_folder(config)
+    model, tokenizer = load_model(target_folder_name, config)
 
-    # Load model and tokenizer
-    model, tokenizer = load_model(target_dir, config)
-
+    # Download and load reverse model
+    use_mmi = config.getboolean('model', 'use_mmi')
+    if use_mmi:
+        mmi_target_folder_name = download_reverse_model_folder(config)
+        mmi_model, mmi_tokenizer = load_model(mmi_target_folder_name, config)
+    else:
+        mmi_model = None
+        mmi_tokenizer = None
+    
     # Run Telegram bot
-    bot = TelegramBot(model, tokenizer, config)
+    bot = TelegramBot(model, tokenizer, config, mmi_model=mmi_model, mmi_tokenizer=mmi_tokenizer)
     bot.run_chat()
     
 if __name__ == '__main__':

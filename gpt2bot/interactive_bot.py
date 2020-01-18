@@ -6,14 +6,14 @@ import argparse
 import logging
 import random
 
-from model import download_model_folder, load_model
+from model import download_model_folder, download_reverse_model_folder, load_model
 from decoder import generate_response
 
 # Enable logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-def run_chat(model, tokenizer, config):
+def run_chat(model, tokenizer, config, mmi_model=None, mmi_tokenizer=None):
     # Parse parameters
     num_samples = config.getint('decoder', 'num_samples')
     turns_memory = config.getint('chatbot', 'turns_memory')
@@ -50,7 +50,14 @@ def run_chat(model, tokenizer, config):
                 history += message + tokenizer.eos_token
 
         # Generate bot messages
-        bot_messages = generate_response(model, tokenizer, history, config)
+        bot_messages = generate_response(
+            model, 
+            tokenizer, 
+            history, 
+            config, 
+            mmi_model=mmi_model, 
+            mmi_tokenizer=mmi_tokenizer
+        )
         if num_samples == 1:
             bot_message = bot_messages[0]
         else:
@@ -71,15 +78,21 @@ def main():
     with open(args.config) as f:
         config.read_file(f)
 
-    # Download model artifacts
-    target_dir = download_model_folder(config)
+    # Download and load main model
+    target_folder_name = download_model_folder(config)
+    model, tokenizer = load_model(target_folder_name, config)
 
-    # Load model and tokenizer
-    model, tokenizer = load_model(target_dir, config)
-
-    # Run chatbot with GPT-2
-    run_chat(model, tokenizer, config)
+    # Download and load reverse model
+    use_mmi = config.getboolean('model', 'use_mmi')
+    if use_mmi:
+        mmi_target_folder_name = download_reverse_model_folder(config)
+        mmi_model, mmi_tokenizer = load_model(mmi_target_folder_name, config)
+    else:
+        mmi_model = None
+        mmi_tokenizer = None
     
+    # Run chatbot with GPT-2
+    run_chat(model, tokenizer, config, mmi_model=mmi_model, mmi_tokenizer=mmi_tokenizer)
 
 if __name__ == '__main__':
     main()

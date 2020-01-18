@@ -39,7 +39,7 @@ def top_k_top_p_filtering(logits, top_k=0, top_p=0.0, filter_value=-float('Inf')
     return logits
 
 
-def sample_sequence(model, tokenizer, context_tokens, config):
+def sample_sequence(model, tokenizer, context_ids, config):
     # Parse parameters
     no_cuda = config.getboolean('model', 'no_cuda')
     num_samples = config.getint('decoder', 'num_samples')
@@ -49,7 +49,7 @@ def sample_sequence(model, tokenizer, context_tokens, config):
     top_p = config.getfloat('decoder', 'top_p')
 
     device = torch.device("cuda" if torch.cuda.is_available() and not no_cuda else "cpu")
-    context_tensor = torch.tensor(context_tokens, dtype=torch.long, device=device)
+    context_tensor = torch.tensor(context_ids, dtype=torch.long, device=device)
     context_tensor = context_tensor.unsqueeze(0).repeat(num_samples, 1)
     generated = context_tensor
     with torch.no_grad():
@@ -63,30 +63,59 @@ def sample_sequence(model, tokenizer, context_tokens, config):
             else:
                 next_token = torch.multinomial(F.softmax(filtered_logits, dim=-1), num_samples=1)
             generated = torch.cat((generated, next_token), dim=1)
-            if (generated[:, len(context_tokens):] == tokenizer.eos_token_id).any(dim=1).all():
+            if (generated[:, len(context_ids):] == tokenizer.eos_token_id).any(dim=1).all():
                 # EOS token id found in each sample
                 break
-            if generated.shape[1] - len(context_tokens) >= max_length:
+            if generated.shape[1] - len(context_ids) >= max_length:
                 # Maximum length reached
                 break
     return generated
 
-def generate_response(model, tokenizer, context, config):
+def select_using_mmi(mmi_model, mmi_tokenizer, candidates, config):
+    # Parse parameters
+    no_cuda = config.getboolean('model', 'no_cuda')
+
+    device = torch.device("cuda" if torch.cuda.is_available() and not no_cuda else "cpu")
+    scores = []
+    for i, candidate in enumerate(candidates):
+        context = []
+        for response in reversed(candidate):
+            context.extend(response)
+            context.append(mmi_tokenizer.eos_token_id)
+        context_ids = mmi_tokenizer.encode(context)
+        context_tensor = torch.tensor(context_ids, dtype=torch.long, device=device)
+        loss, _, _ = mmi_model(input_ids=context_tensor, labels=context_tensor)
+        scores.append(-loss.float()) 
+
+    scores = torch.stack(scores, dim=0)
+    # The smaller the loss, the higher must be the probability of selecting it
+    winner = torch.multinomial(F.softmax(scores, dim=0), num_samples=1).item()
+    return winner
+
+def generate_response(model, tokenizer, context, config, mmi_model=None, mmi_tokenizer=None):
     # Parse parameters
     seed = config.get('decoder', 'seed')
     seed = int(seed) if seed is not None else None
+    use_mmi = config.getboolean('model', 'use_mmi')
+    num_samples = config.getint('decoder', 'num_samples')
 
     # Make answers reproducible only if wanted
     if seed is not None:
         set_seed(seed)
 
     # Generate response
-    context_tokens = tokenizer.encode(context)
-    out = sample_sequence(model, tokenizer, context_tokens, config)
-    out = out[:, len(context_tokens):].tolist()
+    context_ids = tokenizer.encode(context)
+    samples = sample_sequence(model, tokenizer, context_ids, config)
+    samples = samples[:, len(context_ids):].tolist()
     texts = []
-    for o in out:
-        text = tokenizer.decode(o, clean_up_tokenization_spaces=True)
+    for sample in samples:
+        text = tokenizer.decode(sample, clean_up_tokenization_spaces=True)
         text = text[: text.find(tokenizer.eos_token)]
         texts.append(text)
+    
+    if use_mmi:
+        assert(num_samples > 1, "MMI requires num_samples > 1")
+        candidates = [context + text for text in texts]
+        best_i = select_using_mmi(mmi_model, mmi_tokenizer, candidates, config)
+        return [texts[best_i]]
     return texts
