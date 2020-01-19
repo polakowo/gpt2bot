@@ -14,6 +14,7 @@ import requests
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
 import random
+import re
 
 from model import download_model_folder, download_reverse_model_folder, load_model
 from decoder import generate_response
@@ -77,6 +78,10 @@ def send_action(action):
 
 send_typing_action = send_action(ChatAction.TYPING)
 
+def gpt_normalize(txt):
+    txt = re.sub(r"[^A-Za-z0-9()\[\]:,.!?'“”\"]", " ", txt) # remove illegal chars
+    return ' '.join(txt.strip().split()) # remove unnecessary spaces
+
 @send_typing_action
 def message(self, update, context):
     # Parse parameters
@@ -107,15 +112,16 @@ def message(self, update, context):
     }
     turns.append(turn)
     turn['user_messages'].append(user_message)
+    logger.info(f"{update.effective_message.chat_id} - User >>> {user_message}")
     # Merge turns into a single history (don't forget EOS token)
     history = ""
     from_index = max(len(turns)-max_turns_history-1, 0) if max_turns_history >= 0 else 0
     for turn in turns[from_index:]:
         # Each turn begings with user messages
         for message in turn['user_messages']:
-            history += message + self.tokenizer.eos_token
+            history += gpt_normalize(message) + self.tokenizer.eos_token
         for message in turn['bot_messages']:
-            history += message + self.tokenizer.eos_token
+            history += gpt_normalize(message) + self.tokenizer.eos_token
 
     # Generate bot messages
     bot_messages = generate_response(
@@ -133,6 +139,7 @@ def message(self, update, context):
         # This way you can avoid loops
         bot_message = random.choice(bot_messages)
     turn['bot_messages'].append(bot_message)
+    logger.info(f"{update.effective_message.chat_id} - Bot >>> {bot_message}")
     if return_gif:
         # Return response as GIF
         gif_url = translate_message_to_gif(bot_message, self.config)
