@@ -94,10 +94,11 @@ def select_using_mmi(mmi_model, mmi_tokenizer, candidates, config):
 
 def generate_response(model, tokenizer, context, config, mmi_model=None, mmi_tokenizer=None):
     # Parse parameters
-    seed = config.get('decoder', 'seed')
-    seed = int(seed) if seed is not None else None
     use_mmi = config.getboolean('model', 'use_mmi')
     num_samples = config.getint('decoder', 'num_samples')
+    max_length = config.getint('decoder', 'max_length')
+    seed = config.get('decoder', 'seed')
+    seed = int(seed) if seed is not None else None
 
     # Make answers reproducible only if wanted
     if seed is not None:

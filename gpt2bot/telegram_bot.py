@@ -81,7 +81,7 @@ send_typing_action = send_action(ChatAction.TYPING)
 def message(self, update, context):
     # Parse parameters
     num_samples = self.config.getint('decoder', 'num_samples')
-    turns_memory = self.config.getint('chatbot', 'turns_memory')
+    max_turns_history = self.config.getint('decoder', 'max_turns_history')
     if 'turns' not in context.chat_data:
         context.chat_data['turns'] = []
     turns = context.chat_data['turns']
@@ -97,7 +97,7 @@ def message(self, update, context):
         # Return gif
         return_gif = True
         user_message = user_message.replace('@gif', '').strip()
-    if turns_memory == 0:
+    if max_turns_history == 0:
         # If you still get different responses then set seed
         context.chat_data['turns'] = []
     # A single turn is a group of user messages and bot responses right after
@@ -109,7 +109,7 @@ def message(self, update, context):
     turn['user_messages'].append(user_message)
     # Merge turns into a single history (don't forget EOS token)
     history = ""
-    from_index = max(len(turns)-turns_memory-1, 0) if turns_memory >= 0 else 0
+    from_index = max(len(turns)-max_turns_history-1, 0) if max_turns_history >= 0 else 0
     for turn in turns[from_index:]:
         # Each turn begings with user messages
         for message in turn['user_messages']:

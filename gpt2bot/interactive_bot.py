@@ -16,14 +16,14 @@ logger = logging.getLogger(__name__)
 def run_chat(model, tokenizer, config, mmi_model=None, mmi_tokenizer=None):
     # Parse parameters
     num_samples = config.getint('decoder', 'num_samples')
-    turns_memory = config.getint('chatbot', 'turns_memory')
+    max_turns_history = config.getint('decoder', 'max_turns_history')
 
     logger.info("Running the chatbot...")
     turns = []
     print("Bot >>>", "Just start texting me. If I'm getting annoying, type \"Bye\". To quit the chat type \"Quit\".")
     while True:
         prompt = input("User >>> ")
-        if turns_memory == 0:
+        if max_turns_history == 0:
             # If you still get different responses then set seed
             turns = []
         if prompt.lower() == 'bye':
@@ -41,7 +41,7 @@ def run_chat(model, tokenizer, config, mmi_model=None, mmi_tokenizer=None):
         turn['user_messages'].append(prompt)
         # Merge turns into a single history (don't forget EOS token)
         history = ""
-        from_index = max(len(turns)-turns_memory-1, 0) if turns_memory >= 0 else 0
+        from_index = max(len(turns)-max_turns_history-1, 0) if max_turns_history >= 0 else 0
         for turn in turns[from_index:]:
             # Each turn begings with user messages
             for message in turn['user_messages']:
