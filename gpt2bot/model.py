@@ -40,12 +40,13 @@ LSP_MODEL_URL = {
         'small_fs': 'https://convaisharables.blob.core.windows.net/lsp/multiref/small_fs.pkl',
         'small_ft': 'https://convaisharables.blob.core.windows.net/lsp/multiref/small_ft.pkl'
     },
-    'dstc': {
-        'medium_ft': 'https://convaisharables.blob.core.windows.net/lsp/DSTC/medium_ft.pkl'
+    'dstc': { # medium_ft.pkl is actually a small model
+        'small_ft': 'https://convaisharables.blob.core.windows.net/lsp/DSTC/medium_ft.pkl'
     }
 }
 
 # The reverse model is predicting the source from the target. This model is used for MMI reranking.
+# small_reverse.pkl is actually a medium model
 REVERSE_MODEL_URL = 'https://convaisharables.blob.core.windows.net/lsp/multiref/small_reverse.pkl'
 
 def http_get(url, temp_file):
