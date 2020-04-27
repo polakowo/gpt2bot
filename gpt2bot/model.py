@@ -147,6 +147,7 @@ def load_model(target_folder_name, config):
     model.load_state_dict(state_dict)
     model.to(device)
     model.eval()
+    # Test
     return model, tokenizer
 
 def main():
