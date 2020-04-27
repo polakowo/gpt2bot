@@ -6,7 +6,7 @@ import argparse
 import logging
 import random
 
-from model import download_model_folder, download_reverse_model_folder, load_model
+from model import load_model
 from decoder import generate_response
 
 # Enable logging
@@ -78,15 +78,15 @@ def main():
     with open(args.config) as f:
         config.read_file(f)
 
-    # Download and load main model
-    target_folder_name = download_model_folder(config)
-    model, tokenizer = load_model(target_folder_name, config)
+    # Load main model
+    model_folder = config.get('model', 'model_folder')
+    model, tokenizer = load_model(model_folder, config)
 
     # Download and load reverse model
     use_mmi = config.getboolean('model', 'use_mmi')
     if use_mmi:
-        mmi_target_folder_name = download_reverse_model_folder(config)
-        mmi_model, mmi_tokenizer = load_model(mmi_target_folder_name, config)
+        mmi_model_folder = config.get('model', 'mmi_model_folder')
+        mmi_model, mmi_tokenizer = load_model(mmi_model_folder, config)
     else:
         mmi_model = None
         mmi_tokenizer = None
