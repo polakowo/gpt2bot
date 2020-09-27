@@ -67,4 +67,4 @@ $ python run_telegram_bot.py
 
 ![](telegram_bot.gif)
 
-Just start texting. Append @gif for the bot to also generate a GIF. To reset, type "/start".
+Just start texting. Append "@gif" for the bot to also generate a GIF. To reset, type "/start".
