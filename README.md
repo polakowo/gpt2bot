@@ -23,6 +23,12 @@ Bot >>> You monster
 
 ### 2. Deploy the bot
 
+#### Google Colab
+
+[A Colab interactive notebook](https://colab.research.google.com/github/polakowo/gpt2bot/blob/master/Demo.ipynb)
+
+#### Locally
+
 To get started, first clone this repo:
 
 ```
@@ -45,16 +51,16 @@ $ source venv/bin/activate  # Unix
 $ venv\Scripts\activate  # Windows
 ```
 
-Set your parameters such as API token in chatbot.cfg:
-
-```
-$ nano chatbot.cfg
-```
-
 Install the requirements:
 
 ```
 $ pip install -r requirements.txt
+```
+
+Set your parameters such as API token in chatbot.cfg:
+
+```
+$ nano chatbot.cfg
 ```
 
 Run the chatbot:
@@ -67,4 +73,4 @@ $ python run_telegram_bot.py
 
 ![](telegram_bot.gif)
 
-Just start texting. Append @gif for the bot to also generate a GIF. To reset, type "/start".
+Just start texting. Append "@gif" for the bot to also generate a GIF. To reset, type "/start".
