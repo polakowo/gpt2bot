@@ -22,8 +22,8 @@ dialogue response generation model, which was trained by Microsoft on 147M multi
 dialogue from Reddit discussion thread. The human evaluation results indicate that its 
 quility is comparable to human response quality under a single-turn conversation Turing test.
 
-To further improve dialog generation, the bot uses [DialogRPT](https://arxiv.org/abs/2009.06978) 
-- a dialog response ranking model trained on 100+ millions of human feedback data.
+To further improve dialog generation, the bot uses [DialogRPT](https://arxiv.org/abs/2009.06978) - 
+a dialog response ranking model trained on 100+ millions of human feedback data.
 
 The bot can also use any other model supported by [transformers](https://github.com/huggingface/transformers).
 For example, you might train a poem generator and pass its responses through a sentiment 
