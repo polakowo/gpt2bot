@@ -17,13 +17,13 @@ Bot >>> You monster
 
 gpt2bot is a multi-turn Telegram chatbot powered by neural networks. 
 
-The bot uses DialoGPT - a large-scale pretrained dialogue response generation 
-model, which was trained by Microsoft on 147M multi-turn dialogue from Reddit 
-discussion thread. The human evaluation results indicate that its quility is comparable 
-to human response quality under a single-turn conversation Turing test.
+The bot uses [DialoGPT](https://arxiv.org/abs/1911.00536) - a large-scale pretrained 
+dialogue response generation model, which was trained by Microsoft on 147M multi-turn 
+dialogue from Reddit discussion thread. The human evaluation results indicate that its 
+quility is comparable to human response quality under a single-turn conversation Turing test.
 
-To further improve dialog generation, the bot uses DialogRPT - a dialog response ranking 
-model trained on 100+ millions of human feedback data.
+To further improve dialog generation, the bot uses [DialogRPT](https://arxiv.org/abs/2009.06978) 
+- a dialog response ranking model trained on 100+ millions of human feedback data.
 
 The bot can also use any other model supported by [transformers](https://github.com/huggingface/transformers).
 For example, you might train a poem generator and pass its responses through a sentiment 
