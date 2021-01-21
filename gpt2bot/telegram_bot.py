@@ -8,7 +8,14 @@ from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
 import random
 
-from .utils import setup_logger, load_pipeline, clean_text, generate_text
+from .utils import (
+    setup_logger,
+    load_generator_pipeline,
+    clean_text,
+    generate_text,
+    load_classifier_pipeline,
+    classify_responses
+)
 
 logger = setup_logger(__name__)
 
@@ -17,8 +24,10 @@ def start_command(update, context):
     """Start a new dialogue with this message."""
 
     context.chat_data['turns'] = []
-    update.message.reply_text("Just start texting me. Append \"@gif\" for me to generate a GIF. "
-                              "If I'm getting annoying, type \"/start\".")
+    update.message.reply_text("Just start texting me. "
+                              "Append \"@gif\" for me to generate a GIF. "
+                              "If I'm getting annoying, type \"/start\". "
+                              "Make sure to send no more than one message at a time.")
 
 
 def requests_retry_session(retries=3, backoff_factor=0.3, status_forcelist=(500, 502, 504), session=None):
@@ -85,7 +94,7 @@ def message(self, update, context):
     """Receive message, generate response, and send it back to the user."""
 
     max_turns_history = self.chatbot_kwargs.get('max_turns_history', 2)
-    message_selector = self.chatbot_kwargs.get('message_selector', random.choice)
+    larger_is_better = self.classifier_kwargs.get('larger_is_better', True)
     giphy_prob = self.chatbot_kwargs.get('giphy_prob', 0.1)
     giphy_max_words = self.chatbot_kwargs.get('giphy_max_words', 10)
 
@@ -124,7 +133,20 @@ def message(self, update, context):
     if len(bot_messages) == 1:
         bot_message = bot_messages[0]
     else:
-        bot_message = message_selector(bot_messages)
+        if self.classifier_pipeline is None:
+            bot_message = random.choice(bot_messages)
+        else:
+            scores = classify_responses(
+                turn['user_messages'][-1],
+                bot_messages,
+                self.classifier_pipeline,
+                **self.classifier_kwargs
+            )
+            if larger_is_better:
+                index = max(range(len(bot_messages)), key=scores.__getitem__)
+            else:
+                index = min(range(len(bot_messages)), key=scores.__getitem__)
+            bot_message = bot_messages[index]
     turn['bot_messages'].append(bot_message)
     logger.debug(f"{update.effective_message.chat_id} - Bot >>> {bot_message}")
     # Return response as text
@@ -146,17 +168,26 @@ class TelegramBot:
 
     kwargs should have three keys:
 
-    * pipeline: Keyword arguments passed when calling transformers.pipeline,
-    * generator: Keyword arguments passed when calling the pipeline object + seed,
-    * chatbot: Keyword arguments for setting up the chatbot."""
+    * generator_pipeline: Keyword arguments passed to the pipeline (text generation),
+    * generator: Keyword arguments passed to the pipeline object (text generation) + seed,
+    * classifier_pipeline: Keyword arguments passed to the pipeline (text classification),
+    * classifier: Keyword arguments passed to the pipeline object (text classification),
+    * chatbot: Keyword arguments for setting up the chatbot.
+    """
 
     def __init__(self, **kwargs):
-        self.pipeline_kwargs = kwargs.get('pipeline', {})
+        self.generator_pipeline_kwargs = kwargs.get('generator_pipeline', {})
         self.generator_kwargs = kwargs.get('generator', {})
+        self.classifier_pipeline_kwargs = kwargs.get('classifier_pipeline', {})
+        self.classifier_kwargs = kwargs.get('classifier', {})
         self.chatbot_kwargs = kwargs.get('chatbot', {})
 
-        # Prepare the pipeline
-        self.pipeline = load_pipeline(**self.pipeline_kwargs)
+        # Prepare the pipelines
+        self.pipeline = load_generator_pipeline(**self.generator_pipeline_kwargs)
+        if self.classifier_pipeline_kwargs['model'] is None:
+            self.classifier_pipeline = None
+        else:
+            self.classifier_pipeline = load_classifier_pipeline(**self.classifier_pipeline_kwargs)
 
         # Initialize the chatbot
         logger.info("Initializing the chatbot...")

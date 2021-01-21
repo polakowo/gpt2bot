@@ -50,8 +50,7 @@ def setup_logger(name):
 
 
 # Set up logging
-logging.getLogger("transformers.generation_utils").setLevel(logging.ERROR)
-logging.getLogger("transformers.generation_tf_utils").setLevel(logging.ERROR)
+transformers.logging.set_verbosity_error()
 
 logger = setup_logger(__name__)
 
@@ -94,12 +93,12 @@ def parse_config(config_path):
         config.read_file(f)
 
     return dict(
-        pipeline=dict(
-            model=config.get('pipeline', 'model'),
-            config=config.get('pipeline', 'config'),
-            tokenizer=config.get('pipeline', 'tokenizer'),
-            framework=config.get('pipeline', 'framework'),
-            device=config.getint('pipeline', 'device')
+        generator_pipeline=dict(
+            model=config.get('generator_pipeline', 'model'),
+            config=config.get('generator_pipeline', 'config'),
+            tokenizer=config.get('generator_pipeline', 'tokenizer'),
+            framework=config.get('generator_pipeline', 'framework'),
+            device=config.getint('generator_pipeline', 'device')
         ),
         generator=dict(
             seed=parse_optional_int(config, 'generator', 'seed'),
@@ -123,6 +122,17 @@ def parse_config(config_path):
             use_cache=config.getboolean('generator', 'use_cache'),
             clean_up_tokenization_spaces=config.getboolean('generator', 'clean_up_tokenization_spaces')
         ),
+        classifier_pipeline=dict(
+            model=config.get('classifier_pipeline', 'model'),
+            config=config.get('classifier_pipeline', 'config'),
+            tokenizer=config.get('classifier_pipeline', 'tokenizer'),
+            framework=config.get('classifier_pipeline', 'framework'),
+            device=config.getint('classifier_pipeline', 'device')
+        ),
+        classifier=dict(
+            prepend_context=config.getboolean('classifier', 'prepend_context'),
+            larger_is_better=config.getboolean('classifier', 'larger_is_better')
+        ),
         chatbot=dict(
             max_turns_history=config.getint('chatbot', 'max_turns_history'),
             telegram_token=config.get('chatbot', 'telegram_token'),
@@ -134,11 +144,11 @@ def parse_config(config_path):
     )
 
 
-def load_pipeline(**kwargs):
+def load_generator_pipeline(**kwargs):
     """Load text generation pipeline."""
-    logger.info("Loading the pipeline...")
+    logger.info(f"Loading the text generation pipeline '{kwargs.get('model')}'...")
 
-    return transformers.pipeline("text-generation", **kwargs)
+    return transformers.pipeline('text-generation', **kwargs)
 
 
 def clean_text(txt):
@@ -159,4 +169,22 @@ def generate_text(prompt, pipeline, **kwargs):
     return list(map(lambda x: clean_text(x['generated_text'][len(prompt):]), responses))
 
 
+def load_classifier_pipeline(**kwargs):
+    """Load text classification pipeline."""
+    logger.info(f"Loading the text classification pipeline '{kwargs.get('model')}'...")
 
+    return transformers.pipeline('sentiment-analysis', **kwargs)
+
+
+def classify_responses(prompt, responses, pipeline, **kwargs):
+    """Classify responses using pipeline given prompt and other parameters."""
+    kwargs = kwargs.copy()
+
+    prepend_context = kwargs.pop('prepend_context', True)
+    if 'larger_is_better' in kwargs:
+        del kwargs['larger_is_better']
+
+    if prepend_context:
+        responses = [prompt + pipeline.tokenizer.eos_token + response for response in responses]
+
+    return [output['score'] for output in pipeline(responses)]
