@@ -25,7 +25,7 @@ quility is comparable to human response quality under a single-turn conversation
 To further improve dialog generation, the bot uses [DialogRPT](https://arxiv.org/abs/2009.06978) - 
 a dialog response ranking model trained on 100+ millions of human feedback data.
 
-The bot can also use any other model supported by [transformers](https://github.com/huggingface/transformers).
+The bot can also use any other model supported by [transformers](https://huggingface.co/transformers/).
 For example, you might train a poem generator and pass its responses through a sentiment 
 model to deploy a bot that responds with emotional poetry.
   
