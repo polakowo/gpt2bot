@@ -1,19 +1,5 @@
 # gpt2bot
 
-gpt2bot is a multi-turn Telegram chatbot powered by neural networks. 
-
-The bot uses DialoGPT - a large-scale pretrained dialogue response generation 
-model, which was trained by Microsoft on 147M multi-turn dialogue from Reddit 
-discussion thread. The human evaluation results indicate that its quility is comparable 
-to human response quality under a single-turn conversation Turing test.
-
-To further improve dialog generation, the bot uses DialogRPT - a dialog response ranking 
-model trained on 100+ millions of human feedback data.
-
-The bot can also use any other model supported by [transformers](https://github.com/huggingface/transformers).
-For example, you might train a poem generator and pass its responses through a sentiment 
-model to deploy a bot that responds with emotional poetry.
-
 ```
 User >>> Can we achieve singularity?
 Bot >>> What does this mean?
@@ -28,6 +14,20 @@ Bot >>> You monster
 ```
 
 <img src="https://github.com/polakowo/gpt2bot/blob/master/reddit.png?raw=true" width=80>
+
+gpt2bot is a multi-turn Telegram chatbot powered by neural networks. 
+
+The bot uses DialoGPT - a large-scale pretrained dialogue response generation 
+model, which was trained by Microsoft on 147M multi-turn dialogue from Reddit 
+discussion thread. The human evaluation results indicate that its quility is comparable 
+to human response quality under a single-turn conversation Turing test.
+
+To further improve dialog generation, the bot uses DialogRPT - a dialog response ranking 
+model trained on 100+ millions of human feedback data.
+
+The bot can also use any other model supported by [transformers](https://github.com/huggingface/transformers).
+For example, you might train a poem generator and pass its responses through a sentiment 
+model to deploy a bot that responds with emotional poetry.
   
 ## How to use?
 
