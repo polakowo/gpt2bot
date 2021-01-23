@@ -39,7 +39,7 @@ Follow [the installation steps](https://github.com/polakowo/gpt2bot#locally) and
 $ python run_console_bot.py --config chatbot.cfg
 ```
 
-Or, to let two bots talk to each other, run the script:
+To let two bots talk to each other:
 
 ```
 $ python run_bot_against_bot.py --config chatbot.cfg
