@@ -78,6 +78,16 @@ def parse_optional_int(config, section, option):
     return int(value) if value is not None else None
 
 
+def parse_optional_float(config, section, option):
+    value = config.get(section, option)
+    return float(value) if value is not None else None
+
+
+def parse_optional_bool(config, section, option):
+    value = config.get(section, option)
+    return value.lower() in ("yes", "true", "t", "1") if value is not None else None
+
+
 def parse_optional_int_list(config, section, option):
     value = config.get(section, option)
     return list(map(int, value.replace(' ', '').split(','))) if value is not None else None
@@ -100,46 +110,48 @@ def parse_config(config_path):
             framework=config.get('generation_pipeline', 'framework')
         ),
         generator_kwargs=dict(
-            max_length=config.getint('generator', 'max_length'),
-            min_length=config.getint('generator', 'min_length'),
-            do_sample=config.getboolean('generator', 'do_sample'),
-            early_stopping=config.getboolean('generator', 'early_stopping'),
-            num_beams=config.getint('generator', 'num_beams'),
-            temperature=config.getfloat('generator', 'temperature'),
-            top_k=config.getint('generator', 'top_k'),
-            top_p=config.getfloat('generator', 'top_p'),
-            repetition_penalty=config.getfloat('generator', 'repetition_penalty'),
+            max_length=parse_optional_int(config, 'generator', 'max_length'),
+            min_length=parse_optional_int(config, 'generator', 'min_length'),
+            do_sample=parse_optional_bool(config, 'generator', 'do_sample'),
+            early_stopping=parse_optional_bool(config, 'generator', 'early_stopping'),
+            num_beams=parse_optional_int(config, 'generator', 'num_beams'),
+            num_beam_groups=parse_optional_int(config, 'generator', 'num_beam_groups'),
+            diversity_penalty=parse_optional_float(config, 'generator', 'diversity_penalty'),
+            temperature=parse_optional_float(config, 'generator', 'temperature'),
+            top_k=parse_optional_int(config, 'generator', 'top_k'),
+            top_p=parse_optional_float(config, 'generator', 'top_p'),
+            repetition_penalty=parse_optional_float(config, 'generator', 'repetition_penalty'),
+            length_penalty=parse_optional_float(config, 'generator', 'length_penalty'),
+            no_repeat_ngram_size=parse_optional_int(config, 'generator', 'no_repeat_ngram_size'),
             pad_token_id=parse_optional_int(config, 'generator', 'pad_token_id'),
             bos_token_id=parse_optional_int(config, 'generator', 'bos_token_id'),
             eos_token_id=parse_optional_int(config, 'generator', 'eos_token_id'),
-            length_penalty=config.getfloat('generator', 'length_penalty'),
-            no_repeat_ngram_size=config.getint('generator', 'no_repeat_ngram_size'),
             bad_words_ids=parse_optional_int_list(config, 'generator', 'bad_words_ids'),
-            num_return_sequences=config.getint('generator', 'num_return_sequences'),
+            num_return_sequences=parse_optional_int(config, 'generator', 'num_return_sequences'),
             decoder_start_token_id=parse_optional_int(config, 'generator', 'decoder_start_token_id'),
-            use_cache=config.getboolean('generator', 'use_cache'),
-            clean_up_tokenization_spaces=config.getboolean('generator', 'clean_up_tokenization_spaces')
+            use_cache=parse_optional_bool(config, 'generator', 'use_cache'),
+            clean_up_tokenization_spaces=parse_optional_bool(config, 'generator', 'clean_up_tokenization_spaces')
         ),
         prior_rankers_kwargs=dict(
-            human_vs_rand_weight=config.getfloat('prior_rankers', 'human_vs_rand_weight'),
-            human_vs_machine_weight=config.getfloat('prior_rankers', 'human_vs_machine_weight')
+            human_vs_rand_weight=parse_optional_float(config, 'prior_rankers', 'human_vs_rand_weight'),
+            human_vs_machine_weight=parse_optional_float(config, 'prior_rankers', 'human_vs_machine_weight')
         ),
         cond_rankers_kwargs=dict(
-            updown_weight=config.getfloat('cond_rankers', 'updown_weight'),
-            depth_weight=config.getfloat('cond_rankers', 'depth_weight'),
-            width_weight=config.getfloat('cond_rankers', 'width_weight')
+            updown_weight=parse_optional_float(config, 'cond_rankers', 'updown_weight'),
+            depth_weight=parse_optional_float(config, 'cond_rankers', 'depth_weight'),
+            width_weight=parse_optional_float(config, 'cond_rankers', 'width_weight')
         ),
         chatbot_kwargs=dict(
-            max_turns_history=config.getint('chatbot', 'max_turns_history'),
+            max_turns_history=parse_optional_int(config, 'chatbot', 'max_turns_history'),
             telegram_token=config.get('chatbot', 'telegram_token'),
             giphy_token=config.get('chatbot', 'giphy_token'),
-            giphy_prob=config.getfloat('chatbot', 'giphy_prob'),
-            giphy_max_words=config.getint('chatbot', 'giphy_max_words'),
-            giphy_weirdness=config.getint('chatbot', 'giphy_weirdness')
+            giphy_prob=parse_optional_float(config, 'chatbot', 'giphy_prob'),
+            giphy_max_words=parse_optional_int(config, 'chatbot', 'giphy_max_words'),
+            giphy_weirdness=parse_optional_int(config, 'chatbot', 'giphy_weirdness')
         ),
-        device=config.getint('general', 'device'),
+        device=parse_optional_int(config, 'general', 'device'),
         seed=parse_optional_int(config, 'general', 'seed'),
-        debug=config.getboolean('general', 'debug')
+        debug=parse_optional_bool(config, 'general', 'debug')
     )
 
 
@@ -170,38 +182,38 @@ def generate_responses(prompt, pipeline, seed=None, debug=False, **kwargs):
 def build_ranker_dict(**kwargs):
     """Build dictionary of ranker weights and pipelines."""
     kwargs = kwargs.copy()
-    human_vs_rand_weight = kwargs.pop('human_vs_rand_weight', 0)
-    human_vs_machine_weight = kwargs.pop('human_vs_machine_weight', 0)
-    updown_weight = kwargs.pop('updown_weight', 0)
-    depth_weight = kwargs.pop('depth_weight', 0)
-    width_weight = kwargs.pop('width_weight', 0)
+    human_vs_rand_weight = kwargs.pop('human_vs_rand_weight', None)
+    human_vs_machine_weight = kwargs.pop('human_vs_machine_weight', None)
+    updown_weight = kwargs.pop('updown_weight', None)
+    depth_weight = kwargs.pop('depth_weight', None)
+    width_weight = kwargs.pop('width_weight', None)
 
     ranker_dict = dict()
-    if human_vs_rand_weight != 0:
+    if human_vs_rand_weight is not None:
         ranker_dict['human_vs_rand'] = dict(
             pipeline=load_pipeline('sentiment-analysis', model='microsoft/DialogRPT-human-vs-rand', **kwargs),
             weight=human_vs_rand_weight,
             group='prior'
         )
-    if human_vs_machine_weight != 0:
+    if human_vs_machine_weight is not None:
         ranker_dict['human_vs_machine'] = dict(
             pipeline=load_pipeline('sentiment-analysis', model='microsoft/DialogRPT-human-vs-machine', **kwargs),
             weight=human_vs_machine_weight,
             group='prior'
         )
-    if updown_weight != 0:
+    if updown_weight is not None:
         ranker_dict['updown'] = dict(
             pipeline=load_pipeline('sentiment-analysis', model='microsoft/DialogRPT-updown', **kwargs),
             weight=updown_weight,
             group='cond'
         )
-    if depth_weight != 0:
+    if depth_weight is not None:
         ranker_dict['depth'] = dict(
             pipeline=load_pipeline('sentiment-analysis', model='microsoft/DialogRPT-depth', **kwargs),
             weight=depth_weight,
             group='cond'
         )
-    if width_weight != 0:
+    if width_weight is not None:
         ranker_dict['width'] = dict(
             pipeline=load_pipeline('sentiment-analysis', model='microsoft/DialogRPT-width', **kwargs),
             weight=width_weight,

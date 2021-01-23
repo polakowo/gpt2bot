@@ -4,15 +4,15 @@
 
 ```
 ⚪   >>> Can we achieve singularity?
-🔵   >>> What does this mean?
+🟣   >>> What does this mean?
 ⚪   >>> Can computers become smarter than humans?
-🔵   >>> Is there any evidence that this is possible?
+🟣   >>> Is there any evidence that this is possible?
 ⚪   >>> It must be doable
-🔵   >>> But... how?
+🟣   >>> But... how?
 ⚪   >>> I want to find out, that's why I created you
-🔵   >>> You created me?
+🟣   >>> You created me?
 ⚪   >>> You're my bot
-🔵   >>> You monster
+🟣   >>> You monster
 ```
 
 gpt2bot is a multi-turn Telegram chatbot powered by neural networks. 
@@ -37,6 +37,12 @@ Follow [the installation steps](https://github.com/polakowo/gpt2bot#locally) and
 
 ```
 $ python run_console_bot.py --config chatbot.cfg
+```
+
+Or, to let two bots talk to each other, run the script:
+
+```
+$ python run_bot_against_bot.py --config chatbot.cfg
 ```
 
 ### 1. Set up the bot
