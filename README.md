@@ -29,15 +29,12 @@ a set of dialog response ranking models trained on 100+ millions of human feedba
   
 ## How to use?
 
-### 1. Create a Telegram bot
+### 1. Set up the bot
 
 - Register a new Telegram bot via BotFather (see https://core.telegram.org/bots)
-
-### 2. Create a GIPHY app
-
 - Create a new GIPHY app and generate an API key (see https://developers.giphy.com/docs/api/)
 
-### 3. Deploy the bot
+### 2. Deploy the bot
 
 #### Google Colab
 
@@ -83,7 +80,7 @@ Run the chatbot:
 $ python run_telegram_bot.py --config chatbot.cfg
 ```
 
-### 4. Start chatting!
+### 3. Start chatting!
 
 ![](telegram_bot.gif)
 
