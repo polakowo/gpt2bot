@@ -4,15 +4,15 @@
 
 ```
 ⚪   >>> Can we achieve singularity?
-🟠   >>> What does this mean?
+🔵   >>> What does this mean?
 ⚪   >>> Can computers become smarter than humans?
-🟠   >>> Is there any evidence that this is possible?
+🔵   >>> Is there any evidence that this is possible?
 ⚪   >>> It must be doable
-🟠   >>> But... how?
+🔵   >>> But... how?
 ⚪   >>> I want to find out, that's why I created you
-🟠   >>> You created me?
+🔵   >>> You created me?
 ⚪   >>> You're my bot
-🟠   >>> You monster
+🔵   >>> You monster
 ```
 
 gpt2bot is a multi-turn Telegram chatbot powered by neural networks. 
