@@ -69,7 +69,7 @@ Install the requirements:
 $ pip install -r requirements.txt
 ```
 
-Set your parameters such as API token in chatbot.cfg:
+Set your parameters such as API token in chatbot.cfg (or any other config):
 
 ```
 $ nano chatbot.cfg
@@ -78,7 +78,7 @@ $ nano chatbot.cfg
 Run the chatbot:
 
 ```
-$ python run_telegram_bot.py
+$ python run_telegram_bot.py --config chatbot.cfg
 ```
 
 ### 3. Start chatting!
@@ -86,5 +86,13 @@ $ python run_telegram_bot.py
 ![](telegram_bot.gif)
 
 Just start texting. Append "@gif" for the bot to also generate a GIF. To reset, type "/start".
+
+## Configs
+
+* [chatbot.cfg](https://github.com/polakowo/gpt2bot/blob/master/chatbot.cfg): Medium model, no ranking (for CPU)
+* [chatbot-colab.cfg](https://github.com/polakowo/gpt2bot/blob/master/chatbot-colab.cfg): Large model, 2 rankers on 16 candidate responses (for GPU)
+* [chatbot-colab-max.cfg](https://github.com/polakowo/gpt2bot/blob/master/chatbot-colab-max.cfg): Large model, 5 rankers on 32 condidate responses (for GPU)
+
+## Credits
 
 Icon made by [Freepik](https://www.freepik.com) from [Flaticon](https://www.flaticon.com/)
