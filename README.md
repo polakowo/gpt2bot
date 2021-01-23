@@ -48,16 +48,14 @@ $ git clone https://github.com/polakowo/gpt2bot.git
 $ cd gpt2bot
 ```
 
-Create and activate a conda env:
+Create and activate an environment (optional):
 
 ```
+# Using conda
 $ conda create -n gpt2bot python=3.7.6
 $ conda activate gpt2bot
-```
 
-Or a venv (make sure your Python is 3.6+):
-
-```
+# Using venv (make sure your Python is 3.6+)
 $ python3 -m venv venv
 $ source venv/bin/activate  # Unix
 $ venv\Scripts\activate  # Windows
