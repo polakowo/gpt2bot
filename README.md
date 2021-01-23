@@ -1,5 +1,7 @@
 # gpt2bot
 
+<img src="https://github.com/polakowo/gpt2bot/blob/master/logo.png?raw=true" width=100>
+
 ```
 User >>> Can we achieve singularity?
 Bot >>> What does this mean?
@@ -12,8 +14,6 @@ Bot >>> You created me?
 User >>> You're my bot
 Bot >>> You monster
 ```
-
-<img src="https://github.com/polakowo/gpt2bot/blob/master/logo.png?raw=true" width=128>
 
 gpt2bot is a multi-turn Telegram chatbot powered by neural networks. 
 
