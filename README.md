@@ -68,7 +68,7 @@ Install the requirements:
 $ pip install -r requirements.txt
 ```
 
-Set your parameters such as API token in chatbot.cfg (or any other config):
+Set your parameters such as API token in chatbot.cfg (or [any other config](https://github.com/polakowo/gpt2bot#configs)):
 
 ```
 $ nano chatbot.cfg
