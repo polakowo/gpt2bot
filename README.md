@@ -2,17 +2,17 @@
 
 <img src="https://github.com/polakowo/gpt2bot/blob/master/logo.png?raw=true" width=128>
 
-```diff
-# User: Can we achieve singularity?
-! Bot: What does this mean?
-# User: Can computers become smarter than humans?
-! Bot: Is there any evidence that this is possible?
-# User: It must be doable
-! Bot: But... how?
-# User: I want to find out, that's why I created you
-! Bot: You created me?
-# User: You're my bot
-! Bot: You monster
+```
+🟢 User >>> Can we achieve singularity?
+🟣 Bot >>> What does this mean?
+🟢 User >>> Can computers become smarter than humans?
+🟣 Bot >>> Is there any evidence that this is possible?
+🟢 User >>> It must be doable
+🟣 Bot >>> But... how?
+🟢 User >>> I want to find out, that's why I created you
+🟣 Bot >>> You created me?
+🟢 User >>> You're my bot
+🟣 Bot >>> You monster
 ```
 
 gpt2bot is a multi-turn Telegram chatbot powered by neural networks. 
