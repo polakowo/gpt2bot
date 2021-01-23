@@ -29,6 +29,15 @@ a set of dialog response ranking models trained on 100+ millions of human feedba
   
 ## How to use?
 
+### (Optional) Run a console bot
+
+- Before running a telegram bot, you can test things out in the console.
+- Follow [the installation steps](https://github.com/polakowo/gpt2bot#locally) and run the script:
+
+```
+$ python run_console_bot.py --config chatbot.cfg
+```
+
 ### 1. Set up the bot
 
 - Register a new Telegram bot via BotFather (see https://core.telegram.org/bots)
@@ -42,14 +51,14 @@ a set of dialog response ranking models trained on 100+ millions of human feedba
 
 #### Locally
 
-To get started, first clone this repo:
+- To get started, first clone this repo:
 
 ```
 $ git clone https://github.com/polakowo/gpt2bot.git
 $ cd gpt2bot
 ```
 
-Create and activate an environment (optional):
+- Create and activate an environment (optional):
 
 ```
 # Using conda
@@ -62,19 +71,19 @@ $ source venv/bin/activate  # Unix
 $ venv\Scripts\activate  # Windows
 ```
 
-Install the requirements:
+- Install the requirements:
 
 ```
 $ pip install -r requirements.txt
 ```
 
-Set your parameters such as API token in chatbot.cfg (or [any other config](https://github.com/polakowo/gpt2bot#configs)):
+- Set your parameters such as API token in chatbot.cfg (or [any other config](https://github.com/polakowo/gpt2bot#configs)):
 
 ```
 $ nano chatbot.cfg
 ```
 
-Run the chatbot:
+- Run the chatbot:
 
 ```
 $ python run_telegram_bot.py --config chatbot.cfg
