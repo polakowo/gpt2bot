@@ -22,7 +22,7 @@ class CustomFormatter(logging.Formatter):
     format = "%(message)s"
 
     FORMATS = {
-        logging.DEBUG: ColorCodes.grey + format + ColorCodes.reset,
+        logging.DEBUG: ColorCodes.light_blue + format + ColorCodes.reset,
         logging.INFO: ColorCodes.green + format + ColorCodes.reset,
         logging.WARNING: ColorCodes.yellow + format + ColorCodes.reset,
         logging.ERROR: ColorCodes.red + format + ColorCodes.reset,
@@ -93,15 +93,13 @@ def parse_config(config_path):
         config.read_file(f)
 
     return dict(
-        generator_pipeline=dict(
-            model=config.get('generator_pipeline', 'model'),
-            config=config.get('generator_pipeline', 'config'),
-            tokenizer=config.get('generator_pipeline', 'tokenizer'),
-            framework=config.get('generator_pipeline', 'framework'),
-            device=config.getint('generator_pipeline', 'device')
+        generation_pipeline_kwargs=dict(
+            model=config.get('generation_pipeline', 'model'),
+            config=config.get('generation_pipeline', 'config'),
+            tokenizer=config.get('generation_pipeline', 'tokenizer'),
+            framework=config.get('generation_pipeline', 'framework')
         ),
-        generator=dict(
-            seed=parse_optional_int(config, 'generator', 'seed'),
+        generator_kwargs=dict(
             max_length=config.getint('generator', 'max_length'),
             min_length=config.getint('generator', 'min_length'),
             do_sample=config.getboolean('generator', 'do_sample'),
@@ -122,33 +120,34 @@ def parse_config(config_path):
             use_cache=config.getboolean('generator', 'use_cache'),
             clean_up_tokenization_spaces=config.getboolean('generator', 'clean_up_tokenization_spaces')
         ),
-        classifier_pipeline=dict(
-            model=config.get('classifier_pipeline', 'model'),
-            config=config.get('classifier_pipeline', 'config'),
-            tokenizer=config.get('classifier_pipeline', 'tokenizer'),
-            framework=config.get('classifier_pipeline', 'framework'),
-            device=config.getint('classifier_pipeline', 'device')
+        prior_rankers_kwargs=dict(
+            human_vs_rand_weight=config.getfloat('prior_rankers', 'human_vs_rand_weight'),
+            human_vs_machine_weight=config.getfloat('prior_rankers', 'human_vs_machine_weight')
         ),
-        classifier=dict(
-            prepend_context=config.getboolean('classifier', 'prepend_context'),
-            larger_is_better=config.getboolean('classifier', 'larger_is_better')
+        cond_rankers_kwargs=dict(
+            updown_weight=config.getfloat('cond_rankers', 'updown_weight'),
+            depth_weight=config.getfloat('cond_rankers', 'depth_weight'),
+            width_weight=config.getfloat('cond_rankers', 'width_weight')
         ),
-        chatbot=dict(
+        chatbot_kwargs=dict(
             max_turns_history=config.getint('chatbot', 'max_turns_history'),
             telegram_token=config.get('chatbot', 'telegram_token'),
             giphy_token=config.get('chatbot', 'giphy_token'),
             giphy_prob=config.getfloat('chatbot', 'giphy_prob'),
             giphy_max_words=config.getint('chatbot', 'giphy_max_words'),
             giphy_weirdness=config.getint('chatbot', 'giphy_weirdness')
-        )
+        ),
+        device=config.getint('general', 'device'),
+        seed=parse_optional_int(config, 'general', 'seed'),
+        debug=config.getboolean('general', 'debug')
     )
 
 
-def load_generator_pipeline(**kwargs):
-    """Load text generation pipeline."""
-    logger.info(f"Loading the text generation pipeline '{kwargs.get('model')}'...")
+def load_pipeline(task, **kwargs):
+    """Load a pipeline."""
+    logger.info(f"Loading the pipeline '{kwargs.get('model')}'...")
 
-    return transformers.pipeline('text-generation', **kwargs)
+    return transformers.pipeline(task, **kwargs)
 
 
 def clean_text(txt):
@@ -156,35 +155,112 @@ def clean_text(txt):
     return ' '.join(txt.strip().split())
 
 
-def generate_text(prompt, pipeline, **kwargs):
-    """Generate text using pipeline given prompt and other parameters."""
-    kwargs = kwargs.copy()
-
-    # Make answers reproducible only if wanted
-    seed = kwargs.pop('seed', None)
+def generate_responses(prompt, pipeline, seed=None, debug=False, **kwargs):
+    """Generate responses using a text generation pipeline."""
     if seed is not None:
         set_seed(seed)
 
-    responses = pipeline(prompt, **kwargs)
-    return list(map(lambda x: clean_text(x['generated_text'][len(prompt):]), responses))
+    outputs = pipeline(prompt, **kwargs)
+    responses = list(map(lambda x: clean_text(x['generated_text'][len(prompt):]), outputs))
+    if debug:
+        logger.debug(dict(responses=responses))
+    return responses
 
 
-def load_classifier_pipeline(**kwargs):
-    """Load text classification pipeline."""
-    logger.info(f"Loading the text classification pipeline '{kwargs.get('model')}'...")
-
-    return transformers.pipeline('sentiment-analysis', **kwargs)
-
-
-def classify_responses(prompt, responses, pipeline, **kwargs):
-    """Classify responses using pipeline given prompt and other parameters."""
+def build_ranker_dict(**kwargs):
+    """Build dictionary of ranker weights and pipelines."""
     kwargs = kwargs.copy()
+    human_vs_rand_weight = kwargs.pop('human_vs_rand_weight', 0)
+    human_vs_machine_weight = kwargs.pop('human_vs_machine_weight', 0)
+    updown_weight = kwargs.pop('updown_weight', 0)
+    depth_weight = kwargs.pop('depth_weight', 0)
+    width_weight = kwargs.pop('width_weight', 0)
 
-    prepend_context = kwargs.pop('prepend_context', True)
-    if 'larger_is_better' in kwargs:
-        del kwargs['larger_is_better']
+    ranker_dict = dict()
+    if human_vs_rand_weight != 0:
+        ranker_dict['human_vs_rand'] = dict(
+            pipeline=load_pipeline('sentiment-analysis', model='microsoft/DialogRPT-human-vs-rand', **kwargs),
+            weight=human_vs_rand_weight,
+            group='prior'
+        )
+    if human_vs_machine_weight != 0:
+        ranker_dict['human_vs_machine'] = dict(
+            pipeline=load_pipeline('sentiment-analysis', model='microsoft/DialogRPT-human-vs-machine', **kwargs),
+            weight=human_vs_machine_weight,
+            group='prior'
+        )
+    if updown_weight != 0:
+        ranker_dict['updown'] = dict(
+            pipeline=load_pipeline('sentiment-analysis', model='microsoft/DialogRPT-updown', **kwargs),
+            weight=updown_weight,
+            group='cond'
+        )
+    if depth_weight != 0:
+        ranker_dict['depth'] = dict(
+            pipeline=load_pipeline('sentiment-analysis', model='microsoft/DialogRPT-depth', **kwargs),
+            weight=depth_weight,
+            group='cond'
+        )
+    if width_weight != 0:
+        ranker_dict['width'] = dict(
+            pipeline=load_pipeline('sentiment-analysis', model='microsoft/DialogRPT-width', **kwargs),
+            weight=width_weight,
+            group='cond'
+        )
+    return ranker_dict
 
-    if prepend_context:
-        responses = [prompt + pipeline.tokenizer.eos_token + response for response in responses]
 
-    return [output['score'] for output in pipeline(responses)]
+def generate_scores(prompt, responses, pipeline, **kwargs):
+    """Generate scores using a text classification pipeline."""
+    responses = [prompt + response for response in responses]
+
+    outputs = pipeline(responses, **kwargs)
+    return [output['score'] for output in outputs]
+
+
+def pick_best_response(prompt, responses, ranker_dict, debug=False):
+    """Pick the best response according to the weighted average of scores."""
+    if len(ranker_dict) == 0:
+        return random.choice(responses)
+
+    def _get_wa_group_scores(group_name):
+        group_scores = 0
+        group_weight_sum = 0
+        for model_name, dct in ranker_dict.items():
+            if dct['group'] == group_name:
+                scores = np.array(generate_scores(
+                    prompt,
+                    responses,
+                    dct['pipeline']
+                ))
+                if debug:
+                    logger.debug(dict(
+                        group=group_name,
+                        model=model_name,
+                        model_scores=scores,
+                        model_weight=dct['weight']
+                    ))
+                group_scores += scores * dct['weight']
+                group_weight_sum += dct['weight']
+        group_scores /= group_weight_sum
+        return group_scores
+
+    group_names = list(map(lambda x: x['group'], ranker_dict.values()))
+    if 'prior' in group_names:
+        prior_scores = _get_wa_group_scores('prior')
+        if debug:
+            logger.debug(dict(prior_scores=prior_scores))
+    else:
+        prior_scores = 1
+    if 'cond' in group_names:
+        cond_scores = _get_wa_group_scores('cond')
+        if debug:
+            logger.debug(dict(cond_scores=cond_scores))
+    else:
+        cond_scores = 1
+    final_scores = prior_scores * cond_scores
+    if debug:
+        logger.debug(dict(final_scores=final_scores))
+    return responses[np.argmax(final_scores)]
+
+

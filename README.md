@@ -13,21 +13,19 @@ User >>> You're my bot
 Bot >>> You monster
 ```
 
-<img src="https://github.com/polakowo/gpt2bot/blob/master/reddit.png?raw=true" width=80>
+<img src="https://github.com/polakowo/gpt2bot/blob/master/logo.png?raw=true" width=128>
 
 gpt2bot is a multi-turn Telegram chatbot powered by neural networks. 
 
 The bot uses [DialoGPT](https://arxiv.org/abs/1911.00536) - a large-scale pretrained 
 dialogue response generation model, which was trained by Microsoft on 147M multi-turn 
 dialogue from Reddit discussion thread. The human evaluation results indicate that its 
-quility is comparable to human response quality under a single-turn conversation Turing test.
+quality is comparable to human response quality under a single-turn conversation Turing test.
+
+The bot can also use any other text generator supported by [transformers](https://huggingface.co/transformers/).
 
 To further improve dialog generation, the bot uses [DialogRPT](https://arxiv.org/abs/2009.06978) - 
-a dialog response ranking model trained on 100+ millions of human feedback data.
-
-The bot can also use any other model supported by [transformers](https://huggingface.co/transformers/).
-For example, you might train a poem generator and pass its responses through a sentiment 
-model to deploy a bot that responds with emotional poetry.
+a set of dialog response ranking models trained on 100+ millions of human feedback data.
   
 ## How to use?
 
@@ -88,3 +86,5 @@ $ python run_telegram_bot.py
 ![](telegram_bot.gif)
 
 Just start texting. Append "@gif" for the bot to also generate a GIF. To reset, type "/start".
+
+Icon made by [Freepik](https://www.freepik.com) from [Flaticon](https://www.flaticon.com/)
