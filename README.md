@@ -5,12 +5,16 @@
 ```
 ⚪   >>> Can we achieve singularity?
 🟣   >>> What does this mean?
+
 ⚪   >>> Can computers become smarter than humans?
 🟣   >>> Is there any evidence that this is possible?
+
 ⚪   >>> It must be doable
 🟣   >>> But... how?
+
 ⚪   >>> I want to find out, that's why I created you
 🟣   >>> You created me?
+
 ⚪   >>> You're my bot
 🟣   >>> You monster
 ```
@@ -104,6 +108,21 @@ $ python run_telegram_bot.py --config chatbot.cfg
 ![](telegram_bot.gif)
 
 Just start texting. Append "@gif" for the bot to also generate a GIF. To reset, type "/start".
+
+## How to improve the bot
+
+If you feel like your bot is a bit off, you would need to fine-tune its parameters to match
+your communication style (small talk, fact questions, philosophy - all require different parameters).
+Go to your configuration file (such as [chatbot.cfg](https://github.com/polakowo/gpt2bot/blob/master/chatbot.cfg))
+and slightly change the parameters of the generator. 
+
+There are three parameters that make the biggest impact: `temperature`, `top_k` and `top_p`. 
+For example, you might increase the temperature to make the bot crazier, but expect it to be 
+more off-topic. Or you could reduce the temperature for it to make more coherent answers and 
+capture the context better, but expect it to repeat the same utterance. For more tips, 
+see [Hugging Face tutorial](https://huggingface.co/blog/how-to-generate).
+
+Remember that there is no way of finding optimal parameters except by manually tuning them.
 
 ## Configs
 
