@@ -109,7 +109,7 @@ $ python run_telegram_bot.py --config chatbot.cfg
 
 Just start texting. Append "@gif" for the bot to also generate a GIF. To reset, type "/start".
 
-## How to improve the bot
+## How to improve the bot?
 
 If you feel like your bot is a bit off, you would need to fine-tune its parameters to match
 your communication style (small talk, fact questions, philosophy - all require different parameters).
