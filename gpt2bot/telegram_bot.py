@@ -197,7 +197,7 @@ class TelegramBot:
         self.ranker_dict = build_ranker_dict(device=device, **prior_ranker_weights, **cond_ranker_weights)
 
         # Initialize the chatbot
-        logger.info("Initializing the chatbot...")
+        logger.info("Initializing the telegram bot...")
         self.updater = Updater(chatbot_params['telegram_token'], use_context=True)
 
         # Add command, message and error handlers
