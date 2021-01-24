@@ -105,8 +105,9 @@ Just start texting. Append "@gif" for the bot to also generate a GIF. To reset, 
 ## Configs
 
 * [chatbot.cfg](https://github.com/polakowo/gpt2bot/blob/master/chatbot.cfg): Medium model, no ranking (CPU)
-* [chatbot-colab-1.cfg](https://github.com/polakowo/gpt2bot/blob/master/chatbot-colab-1.cfg): Large model, 1 ranker (GPU, <12GB RAM)
-* [chatbot-colab-5.cfg](https://github.com/polakowo/gpt2bot/blob/master/chatbot-colab-5.cfg): Large model, 5 rankers (GPU, >12GB RAM)
+* [chatbot-gpu-large.cfg](https://github.com/polakowo/gpt2bot/blob/master/chatbot-gpu-large.cfg): Large model, no ranking (GPU)
+* [chatbot-gpu-updown.cfg](https://github.com/polakowo/gpt2bot/blob/master/chatbot-gpu-updown.cfg): Large model, `updown` ranker (GPU)
+* [chatbot-gpu-ensemble.cfg](https://github.com/polakowo/gpt2bot/blob/master/chatbot-gpu-ensemble.cfg): Large model, ensemble of 5 rankers (GPU, >12GB RAM)
 
 ## Credits
 
