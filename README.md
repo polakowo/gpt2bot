@@ -36,7 +36,7 @@ a community rather than an individual, which makes it even more fun.
   
 ## How to use?
 
-### (Optional) Run a console bot
+### (Optional) Run the console bot
 
 Before running a telegram bot, you can test things out in the console.
 
