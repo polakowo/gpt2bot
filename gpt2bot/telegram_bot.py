@@ -1,11 +1,12 @@
-# !pip install python-telegram-bot --upgrade
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, PicklePersistence
 from telegram import ChatAction
 from functools import wraps
 from urllib.parse import urlencode
 import requests
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
+import pickle
+import os.path
 
 from .utils import *
 
@@ -18,8 +19,15 @@ def start_command(update, context):
     context.chat_data['turns'] = []
     update.message.reply_text("Just start texting me. "
                               "Append \"@gif\" for me to generate a GIF. "
-                              "If I'm getting annoying, type \"/start\". "
-                              "Make sure to send no more than one message at a time.")
+                              "If I'm getting annoying, type \"/reset\". "
+                              "Make sure to send no more than one message per turn.")
+
+
+def reset_command(update, context):
+    """Reset the dialogue with this message."""
+
+    context.chat_data['turns'] = []
+    update.message.reply_text("Beep beep!")
 
 
 def requests_retry_session(retries=3, backoff_factor=0.3, status_forcelist=(500, 502, 504), session=None):
@@ -108,7 +116,7 @@ def message(self, update, context):
     }
     turns.append(turn)
     turn['user_messages'].append(user_message)
-    logger.debug(f"{update.effective_message.chat_id} - User >>> {user_message}")
+    logger.debug(f"{update.effective_message.chat_id} - User: {user_message}")
     # Merge turns into a single prompt (don't forget EOS token)
     prompt = ""
     from_index = max(len(turns) - max_turns_history - 1, 0) if max_turns_history >= 0 else 0
@@ -137,7 +145,7 @@ def message(self, update, context):
             debug=self.debug
         )
     turn['bot_messages'].append(bot_message)
-    logger.debug(f"{update.effective_message.chat_id} - Bot >>> {bot_message}")
+    logger.debug(f"{update.effective_message.chat_id} - Bot: {bot_message}")
     # Return response as text
     update.message.reply_text(bot_message)
     if len(bot_message.split()) <= giphy_max_words and random.random() < giphy_prob:
@@ -182,6 +190,8 @@ class TelegramBot:
             raise ValueError("Please provide `telegram_token`")
         if 'giphy_token' not in chatbot_params:
             raise ValueError("Please provide `giphy_token`")
+        continue_after_restart = chatbot_params.get('continue_after_restart', True)
+        data_filename = chatbot_params.get('data_filename', 'bot_data.pkl')
 
         self.generation_pipeline_kwargs = generation_pipeline_kwargs
         self.generator_kwargs = generator_kwargs
@@ -198,11 +208,24 @@ class TelegramBot:
 
         # Initialize the chatbot
         logger.info("Initializing the telegram bot...")
-        self.updater = Updater(chatbot_params['telegram_token'], use_context=True)
+        if continue_after_restart:
+            persistence = PicklePersistence(data_filename)
+            self.updater = Updater(chatbot_params['telegram_token'], use_context=True, persistence=persistence)
+            if os.path.isfile(data_filename):
+                with open(data_filename, 'rb') as handle:
+                    chat_data = pickle.load(handle)['chat_data']
+                for chat_id, chat_id_data in chat_data.items():
+                    if len(chat_id_data['turns']) > 0:
+                        self.updater.bot.send_message(chat_id=chat_id, text="I'm back! Let's resume...")
+                    else:
+                        self.updater.bot.send_message(chat_id=chat_id, text="I'm live!")
+        else:
+            self.updater = Updater(chatbot_params['telegram_token'], use_context=True)
 
         # Add command, message and error handlers
         dp = self.updater.dispatcher
         dp.add_handler(CommandHandler('start', start_command))
+        dp.add_handler(CommandHandler('reset', reset_command))
         dp.add_handler(MessageHandler(Filters.text, self_decorator(self, message)))
         dp.add_error_handler(error)
 

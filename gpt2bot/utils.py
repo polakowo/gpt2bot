@@ -22,8 +22,8 @@ class CustomFormatter(logging.Formatter):
     format = "%(message)s"
 
     FORMATS = {
-        logging.DEBUG: ColorCodes.light_blue + format + ColorCodes.reset,
-        logging.INFO: ColorCodes.green + format + ColorCodes.reset,
+        logging.DEBUG: ColorCodes.grey + format + ColorCodes.reset,
+        logging.INFO: ColorCodes.light_blue + format + ColorCodes.reset,
         logging.WARNING: ColorCodes.yellow + format + ColorCodes.reset,
         logging.ERROR: ColorCodes.red + format + ColorCodes.reset,
         logging.CRITICAL: ColorCodes.bold_red + format + ColorCodes.reset,
@@ -152,7 +152,9 @@ def parse_config(config_path):
             giphy_token=config.get('chatbot_params', 'giphy_token'),
             giphy_prob=parse_optional_float(config, 'chatbot_params', 'giphy_prob'),
             giphy_max_words=parse_optional_int(config, 'chatbot_params', 'giphy_max_words'),
-            giphy_weirdness=parse_optional_int(config, 'chatbot_params', 'giphy_weirdness')
+            giphy_weirdness=parse_optional_int(config, 'chatbot_params', 'giphy_weirdness'),
+            continue_after_restart=parse_optional_bool(config, 'chatbot_params', 'continue_after_restart'),
+            data_filename=config.get('chatbot_params', 'data_filename')
         )
     )
 

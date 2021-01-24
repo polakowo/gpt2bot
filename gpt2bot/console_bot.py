@@ -3,11 +3,15 @@ from .utils import *
 logger = setup_logger(__name__)
 
 
-def start_command():
-    print("Bot >>>", "Just start texting me. "
-                     "If I'm getting annoying, type \"/start\". "
-                     "To quit the chat, press Ctrl-C.")
-    return []
+def start_message():
+    print("Bot:",
+          "Just start texting me. "
+          "If I'm getting annoying, type \"/reset\". "
+          "To quit the chat, press Ctrl-C.")
+
+
+def reset_message():
+    print("Bot:", "Beep beep!")
 
 
 def run(**kwargs):
@@ -44,14 +48,23 @@ def run(**kwargs):
     # Run the chatbot
     logger.info("Running the console bot...")
 
-    turns = start_command()
+    turns = []
+    start_message()
     try:
         while True:
-            prompt = input("User >>> ")
+            prompt = input("User: ")
             if max_turns_history == 0:
                 turns = []
             if prompt.lower() == '/start':
-                turns = start_command()
+                start_message()
+                turns = []
+                continue
+            if prompt.lower() == '/reset':
+                reset_message()
+                turns = []
+                continue
+            if prompt.startswith('/'):
+                print('Command not recognized.')
                 continue
             # A single turn is a group of user messages and bot responses right after
             turn = {
@@ -87,7 +100,7 @@ def run(**kwargs):
                     ranker_dict,
                     debug=debug
                 )
-            print("Bot >>>", bot_message)
+            print("Bot:", bot_message)
             turn['bot_messages'].append(bot_message)
     except KeyboardInterrupt:
         exit()

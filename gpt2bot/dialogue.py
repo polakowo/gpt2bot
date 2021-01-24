@@ -52,7 +52,7 @@ def run(**kwargs):
                 turns.append(turn)
                 if i == 0:
                     turn['bot1_messages'].append(first_message)
-                    print(f"Bot 1:\t", first_message)
+                    print(f"Bot 1:", first_message)
                 for j in range(1, 3):
                     if i == 0:
                         continue
@@ -83,7 +83,7 @@ def run(**kwargs):
                             ranker_dict,
                             debug=debug
                         )
-                    print(f"Bot {j}:\t", bot_message)
+                    print(f"Bot {j}:", bot_message)
                     turn[f'bot{j}_messages'].append(bot_message)
             print()
     except KeyboardInterrupt:
