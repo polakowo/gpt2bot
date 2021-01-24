@@ -103,55 +103,57 @@ def parse_config(config_path):
         config.read_file(f)
 
     return dict(
+        general_params=dict(
+            device=parse_optional_int(config, 'general_params', 'device'),
+            seed=parse_optional_int(config, 'general_params', 'seed'),
+            debug=parse_optional_bool(config, 'general_params', 'debug')
+        ),
         generation_pipeline_kwargs=dict(
-            model=config.get('generation_pipeline', 'model'),
-            config=config.get('generation_pipeline', 'config'),
-            tokenizer=config.get('generation_pipeline', 'tokenizer'),
-            framework=config.get('generation_pipeline', 'framework')
+            model=config.get('generation_pipeline_kwargs', 'model'),
+            config=config.get('generation_pipeline_kwargs', 'config'),
+            tokenizer=config.get('generation_pipeline_kwargs', 'tokenizer'),
+            framework=config.get('generation_pipeline_kwargs', 'framework')
         ),
         generator_kwargs=dict(
-            max_length=parse_optional_int(config, 'generator', 'max_length'),
-            min_length=parse_optional_int(config, 'generator', 'min_length'),
-            do_sample=parse_optional_bool(config, 'generator', 'do_sample'),
-            early_stopping=parse_optional_bool(config, 'generator', 'early_stopping'),
-            num_beams=parse_optional_int(config, 'generator', 'num_beams'),
-            num_beam_groups=parse_optional_int(config, 'generator', 'num_beam_groups'),
-            diversity_penalty=parse_optional_float(config, 'generator', 'diversity_penalty'),
-            temperature=parse_optional_float(config, 'generator', 'temperature'),
-            top_k=parse_optional_int(config, 'generator', 'top_k'),
-            top_p=parse_optional_float(config, 'generator', 'top_p'),
-            repetition_penalty=parse_optional_float(config, 'generator', 'repetition_penalty'),
-            length_penalty=parse_optional_float(config, 'generator', 'length_penalty'),
-            no_repeat_ngram_size=parse_optional_int(config, 'generator', 'no_repeat_ngram_size'),
-            pad_token_id=parse_optional_int(config, 'generator', 'pad_token_id'),
-            bos_token_id=parse_optional_int(config, 'generator', 'bos_token_id'),
-            eos_token_id=parse_optional_int(config, 'generator', 'eos_token_id'),
-            bad_words_ids=parse_optional_int_list(config, 'generator', 'bad_words_ids'),
-            num_return_sequences=parse_optional_int(config, 'generator', 'num_return_sequences'),
-            decoder_start_token_id=parse_optional_int(config, 'generator', 'decoder_start_token_id'),
-            use_cache=parse_optional_bool(config, 'generator', 'use_cache'),
-            clean_up_tokenization_spaces=parse_optional_bool(config, 'generator', 'clean_up_tokenization_spaces')
+            max_length=parse_optional_int(config, 'generator_kwargs', 'max_length'),
+            min_length=parse_optional_int(config, 'generator_kwargs', 'min_length'),
+            do_sample=parse_optional_bool(config, 'generator_kwargs', 'do_sample'),
+            early_stopping=parse_optional_bool(config, 'generator_kwargs', 'early_stopping'),
+            num_beams=parse_optional_int(config, 'generator_kwargs', 'num_beams'),
+            num_beam_groups=parse_optional_int(config, 'generator_kwargs', 'num_beam_groups'),
+            diversity_penalty=parse_optional_float(config, 'generator_kwargs', 'diversity_penalty'),
+            temperature=parse_optional_float(config, 'generator_kwargs', 'temperature'),
+            top_k=parse_optional_int(config, 'generator_kwargs', 'top_k'),
+            top_p=parse_optional_float(config, 'generator_kwargs', 'top_p'),
+            repetition_penalty=parse_optional_float(config, 'generator_kwargs', 'repetition_penalty'),
+            length_penalty=parse_optional_float(config, 'generator_kwargs', 'length_penalty'),
+            no_repeat_ngram_size=parse_optional_int(config, 'generator_kwargs', 'no_repeat_ngram_size'),
+            pad_token_id=parse_optional_int(config, 'generator_kwargs', 'pad_token_id'),
+            bos_token_id=parse_optional_int(config, 'generator_kwargs', 'bos_token_id'),
+            eos_token_id=parse_optional_int(config, 'generator_kwargs', 'eos_token_id'),
+            bad_words_ids=parse_optional_int_list(config, 'generator_kwargs', 'bad_words_ids'),
+            num_return_sequences=parse_optional_int(config, 'generator_kwargs', 'num_return_sequences'),
+            decoder_start_token_id=parse_optional_int(config, 'generator_kwargs', 'decoder_start_token_id'),
+            use_cache=parse_optional_bool(config, 'generator_kwargs', 'use_cache'),
+            clean_up_tokenization_spaces=parse_optional_bool(config, 'generator_kwargs', 'clean_up_tokenization_spaces')
         ),
-        prior_rankers_kwargs=dict(
-            human_vs_rand_weight=parse_optional_float(config, 'prior_rankers', 'human_vs_rand_weight'),
-            human_vs_machine_weight=parse_optional_float(config, 'prior_rankers', 'human_vs_machine_weight')
+        prior_ranker_weights=dict(
+            human_vs_rand_weight=parse_optional_float(config, 'prior_ranker_weights', 'human_vs_rand_weight'),
+            human_vs_machine_weight=parse_optional_float(config, 'prior_ranker_weights', 'human_vs_machine_weight')
         ),
-        cond_rankers_kwargs=dict(
-            updown_weight=parse_optional_float(config, 'cond_rankers', 'updown_weight'),
-            depth_weight=parse_optional_float(config, 'cond_rankers', 'depth_weight'),
-            width_weight=parse_optional_float(config, 'cond_rankers', 'width_weight')
+        cond_ranker_weights=dict(
+            updown_weight=parse_optional_float(config, 'cond_ranker_weights', 'updown_weight'),
+            depth_weight=parse_optional_float(config, 'cond_ranker_weights', 'depth_weight'),
+            width_weight=parse_optional_float(config, 'cond_ranker_weights', 'width_weight')
         ),
-        chatbot_kwargs=dict(
-            max_turns_history=parse_optional_int(config, 'chatbot', 'max_turns_history'),
-            telegram_token=config.get('chatbot', 'telegram_token'),
-            giphy_token=config.get('chatbot', 'giphy_token'),
-            giphy_prob=parse_optional_float(config, 'chatbot', 'giphy_prob'),
-            giphy_max_words=parse_optional_int(config, 'chatbot', 'giphy_max_words'),
-            giphy_weirdness=parse_optional_int(config, 'chatbot', 'giphy_weirdness')
-        ),
-        device=parse_optional_int(config, 'general', 'device'),
-        seed=parse_optional_int(config, 'general', 'seed'),
-        debug=parse_optional_bool(config, 'general', 'debug')
+        chatbot_params=dict(
+            max_turns_history=parse_optional_int(config, 'chatbot_params', 'max_turns_history'),
+            telegram_token=config.get('chatbot_params', 'telegram_token'),
+            giphy_token=config.get('chatbot_params', 'giphy_token'),
+            giphy_prob=parse_optional_float(config, 'chatbot_params', 'giphy_prob'),
+            giphy_max_words=parse_optional_int(config, 'chatbot_params', 'giphy_max_words'),
+            giphy_weirdness=parse_optional_int(config, 'chatbot_params', 'giphy_weirdness')
+        )
     )
 
 

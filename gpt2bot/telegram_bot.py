@@ -1,6 +1,6 @@
 # !pip install python-telegram-bot --upgrade
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
-from telegram import ChatAction, ParseMode
+from telegram import ChatAction
 from functools import wraps
 from urllib.parse import urlencode
 import requests
@@ -39,15 +39,15 @@ def requests_retry_session(retries=3, backoff_factor=0.3, status_forcelist=(500,
     return session
 
 
-def translate_message_to_gif(message, **chatbot_kwargs):
+def translate_message_to_gif(message, **chatbot_params):
     """Translate message text into a GIF.
 
     See https://engineering.giphy.com/contextually-aware-search-giphy-gets-work-specific/"""
 
     params = {
-        'api_key': chatbot_kwargs['giphy_token'],
+        'api_key': chatbot_params['giphy_token'],
         's': message,
-        'weirdness': chatbot_kwargs.get('giphy_weirdness', 5)
+        'weirdness': chatbot_params.get('giphy_weirdness', 5)
     }
     url = "http://api.giphy.com/v1/gifs/translate?" + urlencode(params)
     response = requests_retry_session().get(url)
@@ -85,9 +85,9 @@ send_typing_action = send_action(ChatAction.TYPING)
 def message(self, update, context):
     """Receive message, generate response, and send it back to the user."""
 
-    max_turns_history = self.chatbot_kwargs.get('max_turns_history', 2)
-    giphy_prob = self.chatbot_kwargs.get('giphy_prob', 0.1)
-    giphy_max_words = self.chatbot_kwargs.get('giphy_max_words', 10)
+    max_turns_history = self.chatbot_params.get('max_turns_history', 2)
+    giphy_prob = self.chatbot_params.get('giphy_prob', 0.1)
+    giphy_max_words = self.chatbot_params.get('giphy_max_words', 10)
 
     if 'turns' not in context.chat_data:
         context.chat_data['turns'] = []
@@ -144,7 +144,7 @@ def message(self, update, context):
         return_gif = True
     if return_gif:
         # Also return the response as a GIF
-        gif_url = translate_message_to_gif(bot_message, **self.chatbot_kwargs)
+        gif_url = translate_message_to_gif(bot_message, **self.chatbot_params)
         context.bot.send_animation(update.effective_message.chat_id, gif_url)
 
 
@@ -153,46 +153,52 @@ def error(update, context):
 
 
 class TelegramBot:
-    """Runs the Telegram bot based on python-telegram-bot.
+    """Telegram bot based on python-telegram-bot."""
 
-    Args:
-        generation_pipeline_kwargs: Parameters of the pipeline (text generation).
-        generator_kwargs: Parameters of the pipeline object (text generation).
-        prior_rankers_kwargs: Parameters of the `prior` rankers.
-        cond_rankers_kwargs: Parameters of the `cond` rankers.
-        chatbot_kwargs: Parameters of the chatbot.
-        device: Device ordinal for CPU/GPU supports.
-        seed: Seed for random number generators.
-        debug: Whether to enable debugging.
-    """
+    def __init__(self, **kwargs):
+        # Extract parameters
+        general_params = kwargs.get('general_params', {})
+        device = general_params.get('device', -1)
+        seed = general_params.get('seed', None)
+        debug = general_params.get('debug', False)
 
-    def __init__(
-            self,
-            generation_pipeline_kwargs={},
-            generator_kwargs={},
-            prior_rankers_kwargs={},
-            cond_rankers_kwargs={},
-            chatbot_kwargs={},
-            device=-1,
-            seed=None,
-            debug=False
-    ):
+        generation_pipeline_kwargs = kwargs.get('generation_pipeline_kwargs', {})
+        generation_pipeline_kwargs = {**{
+            'model': 'microsoft/DialoGPT-medium'
+        }, **generation_pipeline_kwargs}
+
+        generator_kwargs = kwargs.get('generator_kwargs', {})
+        generator_kwargs = {**{
+            'max_length': 1000,
+            'do_sample': True,
+            'clean_up_tokenization_spaces': True
+        }, **generator_kwargs}
+
+        prior_ranker_weights = kwargs.get('prior_ranker_weights', {})
+        cond_ranker_weights = kwargs.get('cond_ranker_weights', {})
+
+        chatbot_params = kwargs.get('chatbot_params', {})
+        if 'telegram_token' not in chatbot_params:
+            raise ValueError("Please provide `telegram_token`")
+        if 'giphy_token' not in chatbot_params:
+            raise ValueError("Please provide `giphy_token`")
+
         self.generation_pipeline_kwargs = generation_pipeline_kwargs
         self.generator_kwargs = generator_kwargs
-        self.prior_rankers_kwargs = prior_rankers_kwargs
-        self.cond_rankers_kwargs = cond_rankers_kwargs
-        self.chatbot_kwargs = chatbot_kwargs
+        self.prior_ranker_weights = prior_ranker_weights
+        self.cond_ranker_weights = cond_ranker_weights
+        self.chatbot_params = chatbot_params
         self.device = device
         self.seed = seed
         self.debug = debug
 
         # Prepare the pipelines
         self.generation_pipeline = load_pipeline('text-generation', device=device, **generation_pipeline_kwargs)
-        self.ranker_dict = build_ranker_dict(device=device, **prior_rankers_kwargs, **cond_rankers_kwargs)
+        self.ranker_dict = build_ranker_dict(device=device, **prior_ranker_weights, **cond_ranker_weights)
 
         # Initialize the chatbot
         logger.info("Initializing the chatbot...")
-        self.updater = Updater(chatbot_kwargs['telegram_token'], use_context=True)
+        self.updater = Updater(chatbot_params['telegram_token'], use_context=True)
 
         # Add command, message and error handlers
         dp = self.updater.dispatcher
@@ -200,9 +206,9 @@ class TelegramBot:
         dp.add_handler(MessageHandler(Filters.text, self_decorator(self, message)))
         dp.add_error_handler(error)
 
-    def run_bot(self):
+    def run(self):
         """Run the chatbot."""
-        logger.info("Running the chatbot...")
+        logger.info("Running the telegram bot...")
 
         # Start the Bot
         self.updater.start_polling()
@@ -211,3 +217,8 @@ class TelegramBot:
         # SIGTERM or SIGABRT. This should be used most of the time, since
         # start_polling() is non-blocking and will stop the bot gracefully.
         self.updater.idle()
+
+
+def run(**kwargs):
+    """Run `TelegramBot`."""
+    TelegramBot(**kwargs).run()

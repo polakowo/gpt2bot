@@ -43,13 +43,13 @@ Before running a telegram bot, you can test things out in the console.
 Follow [the installation steps](https://github.com/polakowo/gpt2bot#locally) and run the script:
 
 ```
-$ python run_console_bot.py --config chatbot.cfg
+$ python run_bot.py --type=console
 ```
 
 To let two bots talk to each other:
 
 ```
-$ python run_bot_against_bot.py --config chatbot.cfg
+$ python run_bot.py --type=dialogue
 ```
 
 ### 1. Set up the bot
@@ -91,16 +91,22 @@ Install the requirements:
 $ pip install -r requirements.txt
 ```
 
-Set your parameters such as API token in chatbot.cfg (or [any other config](https://github.com/polakowo/gpt2bot#configs)):
+Copy a config (see [available configs](https://github.com/polakowo/gpt2bot#configs)):
 
 ```
-$ nano chatbot.cfg
+cp configs/medium-cpu.cfg my_chatbot.cfg
+```
+
+Set your parameters such as API token in the config:
+
+```
+$ nano my_chatbot.cfg
 ```
 
 Run the chatbot:
 
 ```
-$ python run_telegram_bot.py --config chatbot.cfg
+$ python run_bot.py --type=telegram --config=my_chatbot.cfg
 ```
 
 ### 3. Start chatting!
@@ -112,24 +118,24 @@ Just start texting. Append "@gif" for the bot to also generate a GIF. To reset, 
 ## How to improve?
 
 If you feel like your bot is a bit off, you would need to fine-tune its parameters to match
-your communication style (small talk, fact questions, philosophy - all require different parameters).
-Go to your configuration file (such as [chatbot.cfg](https://github.com/polakowo/gpt2bot/blob/master/chatbot.cfg))
-and slightly change the parameters of the generator. 
+your conversational style (small talk, fact questions, philosophy - all require different parameters).
+Go to your configuration file and slightly change the parameters of the generator.
+The fastest way to assess the quality of your config is to run a short dialogue between two bots.
 
 There are three parameters that make the biggest impact: `temperature`, `top_k` and `top_p`. 
 For example, you might increase the temperature to make the bot crazier, but expect it to be 
 more off-topic. Or you could reduce the temperature for it to make more coherent answers and 
-capture the context better, but expect it to repeat the same utterance. For more tips, 
-see [Hugging Face tutorial](https://huggingface.co/blog/how-to-generate).
+capture the context better, but expect it to repeat the same utterance (you may also experiment 
+with `repetition_penalty`). For more tips, see [HuggingFace tutorial](https://huggingface.co/blog/how-to-generate).
 
 Remember that there is no way of finding optimal parameters except by manually tuning them.
 
 ## Configs
 
-* [chatbot.cfg](https://github.com/polakowo/gpt2bot/blob/master/chatbot.cfg): Medium model, no ranking (CPU)
-* [chatbot-gpu-large.cfg](https://github.com/polakowo/gpt2bot/blob/master/chatbot-gpu-large.cfg): Large model, no ranking (GPU)
-* [chatbot-gpu-updown.cfg](https://github.com/polakowo/gpt2bot/blob/master/chatbot-gpu-updown.cfg): Large model, `updown` ranker (GPU)
-* [chatbot-gpu-ensemble.cfg](https://github.com/polakowo/gpt2bot/blob/master/chatbot-gpu-ensemble.cfg): Large model, ensemble of 5 rankers (GPU, >12GB RAM)
+* [medium-cpu.cfg](https://github.com/polakowo/gpt2bot/blob/master/configs/medium-cpu.cfg): Medium model, no ranking (CPU)
+* [large-gpu.cfg](https://github.com/polakowo/gpt2bot/blob/master/configs/large-gpu.cfg): Large model, no ranking (GPU)
+* [large-updown-gpu.cfg](https://github.com/polakowo/gpt2bot/blob/master/configs/large-updown-gpu.cfg): Large model, `updown` ranker (GPU)
+* [large-ensemble-gpu.cfg](https://github.com/polakowo/gpt2bot/blob/master/configs/large-ensemble-gpu.cfg): Large model, ensemble of 5 rankers (GPU, >12GB RAM)
 
 ## Credits
 

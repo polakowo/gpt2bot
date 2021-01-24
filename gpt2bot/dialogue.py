@@ -3,42 +3,43 @@ from .utils import *
 logger = setup_logger(__name__)
 
 
-def run_bot(
-        generation_pipeline_kwargs={},
-        generator_kwargs={},
-        prior_rankers_kwargs={},
-        cond_rankers_kwargs={},
-        chatbot_kwargs={},
-        device=-1,
-        seed=None,
-        debug=False
-):
-    """Runs the console bot.
+def run(**kwargs):
+    """Run a dialogue between two bots."""
 
-    Args:
-        generation_pipeline_kwargs: Parameters of the pipeline (text generation).
-        generator_kwargs: Parameters of the pipeline object (text generation).
-        prior_rankers_kwargs: Parameters of the `prior` rankers.
-        cond_rankers_kwargs: Parameters of the `cond` rankers.
-        chatbot_kwargs: Parameters of the chatbot.
-        device: Device ordinal for CPU/GPU supports.
-        seed: Seed for random number generators.
-        debug: Whether to enable debugging.
-    """
+    # Extract parameters
+    general_params = kwargs.get('general_params', {})
+    device = general_params.get('device', -1)
+    seed = general_params.get('seed', None)
+    debug = general_params.get('debug', False)
+
+    generation_pipeline_kwargs = kwargs.get('generation_pipeline_kwargs', {})
+    generation_pipeline_kwargs = {**{
+        'model': 'microsoft/DialoGPT-medium'
+    }, **generation_pipeline_kwargs}
+
+    generator_kwargs = kwargs.get('generator_kwargs', {})
+    generator_kwargs = {**{
+        'max_length': 1000,
+        'do_sample': True,
+        'clean_up_tokenization_spaces': True
+    }, **generator_kwargs}
+
+    prior_ranker_weights = kwargs.get('prior_ranker_weights', {})
+    cond_ranker_weights = kwargs.get('cond_ranker_weights', {})
+
+    chatbot_params = kwargs.get('chatbot_params', {})
+    max_turns_history = chatbot_params.get('max_turns_history', 2)
 
     # Prepare the pipelines
     generation_pipeline = load_pipeline('text-generation', device=device, **generation_pipeline_kwargs)
-    ranker_dict = build_ranker_dict(device=device, **prior_rankers_kwargs, **cond_rankers_kwargs)
+    ranker_dict = build_ranker_dict(device=device, **prior_ranker_weights, **cond_ranker_weights)
 
     # Run the chatbot
-    logger.info("Running the chatbots...")
-
-    max_turns_history = chatbot_kwargs.get('max_turns_history', 2)
     try:
         while True:
             first_message = input("First message: ")
             num_turns = int(input("Number of turns: "))
-            print()
+            logger.info("Running the dialogue...")
             turns = []
             for i in range(num_turns):
                 if max_turns_history == 0:
