@@ -26,6 +26,9 @@ The bot can also use any other text generator supported by [transformers](https:
 
 To further improve dialog generation, the bot uses [DialogRPT](https://arxiv.org/abs/2009.06978) - 
 a set of dialog response ranking models trained on 100+ millions of human feedback data.
+
+Since the underlying model was trained on Reddit comment chains, the bot often behaves like 
+a community rather than an individual, which makes it even more fun.
   
 ## How to use?
 
