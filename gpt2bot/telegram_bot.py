@@ -14,8 +14,9 @@ logger = setup_logger(__name__)
 
 
 def start_command(update, context):
-    """Start a new dialogue with this message."""
+    """Start a new dialogue when user sends the command "/start"."""
 
+    logger.debug(f"{update.effective_message.chat_id} - User: /start")
     context.chat_data['turns'] = []
     update.message.reply_text("Just start texting me. "
                               "Append \"@gif\" for me to generate a GIF. "
@@ -24,8 +25,9 @@ def start_command(update, context):
 
 
 def reset_command(update, context):
-    """Reset the dialogue with this message."""
+    """Reset the dialogue when user sends the command "/reset"."""
 
+    logger.debug(f"{update.effective_message.chat_id} - User: /reset")
     context.chat_data['turns'] = []
     update.message.reply_text("Beep beep!")
 
