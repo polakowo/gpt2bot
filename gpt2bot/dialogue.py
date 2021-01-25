@@ -54,7 +54,7 @@ def run(**kwargs):
                     turn['bot1_messages'].append(first_message)
                     print(f"Bot 1:", first_message)
                 for j in range(1, 3):
-                    if i == 0:
+                    if i == 0 and j == 1:
                         continue
                     # Merge turns into a single prompt (don't forget delimiter)
                     prompt = ""
