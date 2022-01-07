@@ -3,6 +3,7 @@ import argparse
 from gpt2bot.telegram_bot import run as run_telegram_bot
 from gpt2bot.console_bot import run as run_console_bot
 from gpt2bot.dialogue import run as run_dialogue
+from gpt2bot.discord_bot import run as run_discord
 from gpt2bot.utils import parse_config
 
 if __name__ == '__main__':
@@ -29,5 +30,7 @@ if __name__ == '__main__':
         run_console_bot(**config)
     elif args.type == 'dialogue':
         run_dialogue(**config)
+    elif args.type == 'discord':
+        run_discord(**config)
     else:
         raise ValueError("Unrecognized conversation type")
