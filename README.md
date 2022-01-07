@@ -1,4 +1,31 @@
-# gpt2bot
+# gpt2bot - Fork with discord functionality added
+This fork of the gpt2bot has added functionality for Discord. The idea was born on a Discord NFT server, where it was requierd to chat every minute (for 100 hours) to gain XP in order to be whitelisted. So called grinding. Of course this can be done smarter :). This bot uses the DialoGTP model to generate answers on messages written in a channel and gain XP this way.
+
+### How does it work?
+The reads all messages on a specific channel and stores these in a list. Every `n` seconds it chooses a random message, generates a answer to this message and posts this in the channel. It gives warnings in the terminal about possible bot detections.
+
+
+### Get started
+- Rename the `gpt2bot/.env.sample` file to `.env` and edit the values. 
+    - The `DISCORD_TOKEN` should be of a real user account, look on Google how to obtain this.
+    - Set the `CHANNEL_NAME` to the channel the bot needs to work on
+    - Set the `DELAY` between messages in seconds
+- By default the bot uses the DialoGPT-medium model (CPU), to use other models, copy configs (GPU) from the config folder and rename to `my_chatbot.cfg`
+- Read the options in `my_chatbot.cfg` and change if nessecary. To change the bot's responses, modify `temperature`, `top_k`, `top_p`.
+- Run the bot using the followin command: `python run_bot.py --type=discord --config=my_chatbot.cfg`
+
+### TODO
+- Implement answer functionality. For example if the bot got a reply, answer to this in the next message.
+- Reply to possible bot detection messages and maybe start a delay.
+- Multi channel support
+- If you have any nice additions, feel free to open a pull request
+
+### Disclaimer
+Selfbot use is prohibited by the Discord terms and can lead to a ban of you Discord account/IP. It is recommendend to use a VPN/Proxy while using this bot. And I a'm in no way responible for anything (including damage), that this bot creates. Given that the bot is trained on a reddit dataset, it can generate answers that are not suitable to post in a discord channel, be warned.
+
+
+-----------------------------------------------
+# gpt2bot - original description
 
 <img src="https://github.com/polakowo/gpt2bot/blob/master/logo.png?raw=true" width=128>
 

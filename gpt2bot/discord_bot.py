@@ -10,8 +10,8 @@ load_dotenv()
 
 class MyClient(discord.Client):
 
-    channel_name = 'general-chat'  # channel to work on
-    min_time = 130  # minimum time to elapse to respond again
+    channel_name = os.environ.get("CHANNEL_NAME")  # channel to work on
+    min_time = os.environ.get("DELAY")  # minimum time to elapse to respond again
 
     def __init__(self, botObj):
         super().__init__()
